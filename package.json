@@ -15,15 +15,13 @@
   "type": "module",
   "main": "",
   "scripts": {
-    "build": "tsc",
+    "build": "pnpm install && tsc",
     "dev": "tsc --watch",
     "lint": "eslint **/*.ts --fix",
-    "p": "node dist/preprocess/index.js",
-    "f": "node dist/filter/index.js",
-    "a": "node dist/allocation/index.js",
-    "preprocess": "npm run build && npm run p",
-    "filter": "npm run build && npm run f",
-    "allocate": "npm run build && npm run a"
+    "filter": "node dist/filter/index.js",
+    "allocate": "node dist/allocation/index.js",
+    "f": "pnpm run filter",
+    "a": "pnpm run allocate"
   },
   "volta": {
     "node": "22.14.0",

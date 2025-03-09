@@ -1,11 +1,7 @@
 export const config = {
   common: {},
-  preprocess: {
-    inFile: "applicants.csv",
-    outFile: "applicants-processed.csv",
-  },
   filter: {
-    inFile: "applicants-processed.csv",
+    inFile: "applicants.csv",
     outFile: "applicants-filtered.csv",
   },
   allocation: {
