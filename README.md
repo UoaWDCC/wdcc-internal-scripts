@@ -5,11 +5,14 @@
 - Configure `config.ts`
 - `pnpm build`
 - Add `team-preference.csv` (TODO: examples)
-- `pnpm run filter`: runs the filter (+ preprocessing?) script
-  - Input: applicants
-  - Output: filtered applicants
+- `pnpm run preprocess`: runs the preprocessing script
+  - Input: raw applicants
+  - Output: applicants in the right format
+- `pnpm run filter`: runs the filter script
+  - Input: (formatted) applicants
+  - Output: accepted applicants + rejected applicants
 - `pnpm run allocate`:
-  - Input: filtered applicants & team preferences
+  - Input: accepted applicants & team preferences
   - Output: applicants, split into teams (1 CSV per team)
 
 I/O is always as a CSV.
@@ -18,7 +21,7 @@ I/O is always as a CSV.
 
 - `pnpm install`
 - `pnpm dev` (leave this running to constantly compile TS to JS)
-- `pnpm f` & `pnpm a` are aliases for `filter` and `allocate`
+- `pnpm p`, `pnpm f` & `pnpm a` are aliases for `preprocess`, `filter` & `allocate`
 
 # Docs
 

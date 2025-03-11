@@ -1,11 +1,16 @@
 export const config = {
   common: {},
-  filter: {
+  preprocess: {
     inFile: "applicants.csv",
-    outFile: "applicants-filtered.csv",
+    outFile: "applicants-processed.csv",
+  },
+  filter: {
+    inFile: "applicants-processed.csv",
+    outFile: "applicants-accepted.csv",
+    outFileRejected: "applicants-rejected.csv",
   },
   allocation: {
-    inFileApplicants: "applicants-filtered.csv",
+    inFileApplicants: "applicants-accepted.csv",
     inFileTeams: "team-preferences.csv",
     outFileFormat: "applicants-<team>.csv",
   },

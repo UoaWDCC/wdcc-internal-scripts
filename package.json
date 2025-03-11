@@ -18,8 +18,10 @@
     "build": "pnpm install && tsc",
     "dev": "tsc --watch",
     "lint": "eslint **/*.ts --fix",
+    "preprocess": "node dist/preprocess/index.js",
     "filter": "node dist/filter/index.js",
     "allocate": "node dist/allocation/index.js",
+    "p": "pnpm run preprocess",
     "f": "pnpm run filter",
     "a": "pnpm run allocate"
   },
