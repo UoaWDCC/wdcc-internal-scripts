@@ -7,7 +7,7 @@ console.log("Running allocation script");
 
 console.log("Parsing Applicants CSV...");
 
-console.log("Parsing Teams CSV...");
+console.log("Parsing Projects CSV...");
 
 console.log("Parsed! Running allocation algorithm...");
 integerProgramming([], [], {A: 0.2});

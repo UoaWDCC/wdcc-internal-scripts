@@ -1,6 +1,6 @@
 // --- We might have to try multiple algorithms... ---
 
-import { Allocation, Applicant, Team } from "../../common/models.js";
+import { Allocation, Applicant, Project } from "../../common/models.js";
 
 type Config = {
   A: number;
@@ -8,9 +8,9 @@ type Config = {
 
 export function integerProgramming(
   applicants: Applicant[],
-  teams: Team[],
+  projects: Project[],
   config: Config
 ): Allocation[] {
-  console.log("Running allocation script,", applicants, teams, config);
+  console.log("Running allocation script,", applicants, projects, config);
   return [];
 }

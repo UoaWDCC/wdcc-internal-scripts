@@ -5,13 +5,13 @@ export type Applicant = {
   // ...
 };
 
-export type Team = {
+export type Project = {
   id: string;
   name: string;
   // ...
 };
 
 export type Allocation = {
-  team: Team;
+  project: Project;
   applicants: Applicant[];
-}
+};
