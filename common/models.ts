@@ -23,8 +23,9 @@ export type Applicant = {
 export type Project = {
   id: string;
   name: string;
-  backendScale: number;
-  frontendScale: number;
+  backendDifficulty: number; 
+  frontendDifficulty: number;
+  backendWeighting: number
   priority: number;
 };
 
