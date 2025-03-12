@@ -1,5 +1,5 @@
 export type Applicant = {
-  timestamp: Date
+  timestamp: Date;
   id: string;
   name: string;
   email: string;
@@ -9,22 +9,23 @@ export type Applicant = {
   skills: string[];
   backendPreference: number;
   frontendExperience: number;
-  backendExperience: number
-  designExperience: number
-  testingExperience: number //not too important ?
-  projectChoices: string[] //index 0 is highest preferences
-  passionBlurb: string // not used
-  portfolioLink: string //not used
-  additionalInfo: string //not used
-  execComments: string // not used
-  rizzLevel: number // not used
-
+  backendExperience: number;
+  designExperience: number;
+  testingExperience: number; //not too important ?
+  projectChoices: string[]; //index 0 is highest preferences
+  passionBlurb: string; // not used
+  portfolioLink: string; //not used
+  additionalInfo: string; //not used
+  execComments: string; // not used
+  rizzLevel: number; // not used
 };
 
 export type Project = {
   id: string;
   name: string;
-  // ...
+  backendScale: number;
+  frontendScale: number;
+  priority: number;
 };
 
 export type Allocation = {
