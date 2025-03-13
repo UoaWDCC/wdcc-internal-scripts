@@ -1,14 +1,14 @@
-// --- script for gale shapley --- 
+// --- script for gale shapley ---
 
 import { Allocation, Applicant, Project } from "../../common/models.js";
 
-import { MinPriorityQueue, IGetCompareValue } from "@datastructures-js/priority-queue";
+import { IGetCompareValue, MinPriorityQueue } from "@datastructures-js/priority-queue";
 
 function _calculateContribution(projectAllocation: ProjectAllocation, applicant: Applicant): number {
     // how to calculate the multipliers
     const FRONT = 1;
     const BACK = 1;
-    const front_multiplier = FRONT * Math.floor((projectAllocation.teamSize * (1 - (projectAllocation.project.backendWeighting / 100)) - projectAllocation.front_allocated);
+    const front_multiplier = FRONT * Math.floor((projectAllocation.teamSize * (1 - (projectAllocation.project.backendWeighting / 100)) - projectAllocation.front_allocated));
     const back_multiplier = BACK * Math.floor((projectAllocation.teamSize * (projectAllocation.project.backendWeighting / 100)) - projectAllocation.back_allocated);
 
     return projectAllocation.project.priority * (front_multiplier * applicant.frontendExperience + back_multiplier * applicant.backendExperience) + projectAllocation.project.backendWeighting * applicant.backendPreference;
@@ -43,15 +43,15 @@ export function stableMatching(
     // put applicants into a queue
     const applicantQueue = applicants.slice();
     while (applicantQueue.length !== 0) {
-        let applicant: Applicant = applicantQueue.shift()!;
-        let currChoice: string = applicant.projectChoices.shift()!;
-        let currAllocation: ProjectAllocation = allocationResult.get(currChoice)!;
+        const applicant: Applicant = applicantQueue.shift()!;
+        const currChoice: string = applicant.projectChoices.shift()!;
+        const currAllocation: ProjectAllocation = allocationResult.get(currChoice)!;
         if (currAllocation.allocated.size() < projectTeamSize) {
             currAllocation.allocated.enqueue(applicant);
             currAllocation.front_allocated += 1 - (applicant.backendPreference / 5);
             currAllocation.back_allocated += applicant.backendPreference / 5;
         } else {
-            let lowest: Applicant = currAllocation.allocated.front()!;
+            const lowest: Applicant = currAllocation.allocated.front()!;
             currAllocation.front_allocated += 1 - (applicant.backendPreference / 5);
             currAllocation.back_allocated += applicant.backendPreference / 5;
 
