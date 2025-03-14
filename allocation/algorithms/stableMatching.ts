@@ -8,8 +8,8 @@ function _calculateContribution(projectAllocation: ProjectAllocation, applicant:
     // how to calculate the multipliers
     const FRONT = 1;
     const BACK = 1;
-    const front_multiplier = FRONT * Math.floor((projectAllocation.teamSize * (1 - (projectAllocation.project.backendWeighting / 100)) - projectAllocation.front_allocated);
-    const back_multiplier = BACK * Math.floor((projectAllocation.teamSize * (projectAllocation.project.backendWeighting / 100)) - projectAllocation.back_allocated);
+    const front_multiplier = FRONT * Math.floor((projectAllocation.teamSize * (1 - (projectAllocation.project.backendWeighting / 7)) - projectAllocation.front_allocated));
+    const back_multiplier = BACK * Math.floor((projectAllocation.teamSize * (projectAllocation.project.backendWeighting / 7)) - projectAllocation.back_allocated);
 
     return projectAllocation.project.priority * (front_multiplier * applicant.frontendExperience + back_multiplier * applicant.backendExperience) + projectAllocation.project.backendWeighting * applicant.backendPreference;
 }

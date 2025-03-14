@@ -1,4 +1,4 @@
-import { Applicant } from "./models.js";
+import { Applicant, Project } from "./models.js";
 import fs from "fs";
 import Papa from "papaparse";
 
@@ -7,7 +7,7 @@ import Papa from "papaparse";
  * @param filePath Path to the CSV file.
  * @returns Promise resolving to an array of Applicant objects.
  */
-export const parseCsv = (filePath: string): Promise<Applicant[]> => {
+export const parseRawCsvApplicants = (filePath: string): Promise<Applicant[]> => {
   return new Promise((resolve, reject) => {
     const fileContent = fs.readFileSync(filePath, "utf8");
 
@@ -56,13 +56,86 @@ export const parseCsv = (filePath: string): Promise<Applicant[]> => {
   });
 };
 
+export const parseCsvProjects = (filePath: string): Promise<Project[]> => {
+  return new Promise((resolve, reject) => {
+    const fileContent = fs.readFileSync(filePath, "utf8");
+
+    Papa.parse(fileContent, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (result) => {
+        try {
+          const projects: Project[] = result.data.map((row: any, index: number) => ({
+            id: row["name"],
+            name: row["name"],
+            backendDifficulty: row["backendDifficulty"],
+            frontendDifficulty: row["frontendDifficulty"],
+            backendWeighting: row["backendWeighting"],
+            priority: row["Priority"]
+          }));
+
+          resolve(projects);
+        } catch (error) {
+          reject(error);
+        }
+      },
+      error: (error : Error) => {
+        reject(error.message);
+      },
+    });
+  });
+};
+
+export const parseProcessedCsvApplicants = (filePath: string): Promise<Applicant[]> => {
+  return new Promise((resolve, reject) => {
+    const fileContent = fs.readFileSync(filePath, "utf8");
+
+    Papa.parse(fileContent, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (result) => {
+        try {
+          const applicants: Applicant[] = result.data.map((row: any) => ({
+            timestamp: new Date(row["timestamp"]), // Directly use the "timestamp" column
+            id: row["id"], // Directly use the "id" column
+            name: row["name"], // Directly use the "name" column
+            email: row["email"], // Directly use the "email" column
+            github: row["github"], // Directly use the "github" column
+            major: row["major"], // Directly use the "major" column
+            rolePreference: row["rolePreference"], // Directly use the "rolePreference" column
+            skills: row["skills"]?.split(",").map((s: string) => s.trim()) || [], // Directly use the "skills" column
+            backendPreference: parseInt(row["backendPreference"], 10) || 0, // Directly use the "backendPreference" column
+            frontendExperience: parseInt(row["frontendExperience"], 10) || 0, // Directly use the "frontendExperience" column
+            backendExperience: parseInt(row["backendExperience"], 10) || 0, // Directly use the "backendExperience" column
+            designExperience: parseInt(row["designExperience"], 10) || 0, // Directly use the "designExperience" column
+            testingExperience: parseInt(row["testingExperience"], 10) || 0, // Directly use the "testingExperience" column
+            projectChoices: row["projectChoices"]?.split(",").map((choice: string) => choice.trim()) || [], // Split projectChoices string into array
+            passionBlurb: row["passionBlurb"] || "", // Directly use the "passionBlurb" column
+            portfolioLink: row["portfolioLink"] || "", // Directly use the "portfolioLink" column
+            additionalInfo: row["additionalInfo"] || "", // Directly use the "additionalInfo" column
+            execComments: row["execComments"] || "", // Directly use the "execComments" column
+            rizzLevel: parseInt(row["rizzLevel"], 10) || 0, // Directly use the "rizzLevel" column
+          }));
+
+          resolve(applicants);
+        } catch (error) {
+          reject(error);
+        }
+      },
+      error: (error: Error) => {
+        reject(error.message);
+      },
+    });
+  });
+};
+
 /**
  * Writes an array of objects to a CSV file.
  * @param data Array of objects to write to CSV.
  * @param filePath Output CSV file path.
  */
 
-export const writeCsv = (data: Applicant[], filePath: string): void => {
+export const writeCsv = (data: unknown[], filePath: string): void => {
   const csv = Papa.unparse(data);
   fs.writeFileSync(filePath, csv, "utf8");
   console.log(`✅ CSV successfully written to ${filePath}`);

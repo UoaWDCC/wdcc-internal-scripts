@@ -1,17 +1,27 @@
 // --- This file mainly for I/O ---
 
-import { integerProgramming } from "./algorithms/integerProgramming.js";
-import { config } from "../config.js";
+import {  parseCsvProjects, parseProcessedCsvApplicants } from "../common/csvParser.js";
+import { stableMatching } from "./algorithms/stableMatching.js";
 
-console.log("Running allocation script");
+const Allocation = async() => {
+    const projectsDataLocation = "./data/projectsData.csv"
+    const applicantsDataLocation = "./data/processed_applicants.csv" // get processed applicants
+    console.log("Running allocation script");
 
-console.log("Parsing Applicants CSV...");
+    console.log("Parsing Applicants CSV...");
+    const applicants = await parseProcessedCsvApplicants(applicantsDataLocation)
+    console.log(applicants.slice(0,3 ))
+    
+    console.log("Parsing Projects CSV...");
+    const projectsData =  await parseCsvProjects(projectsDataLocation)
+    console.log(projectsData.slice(0,3 ))
 
-console.log("Parsing Projects CSV...");
+    console.log("Parsed! Running allocation algorithm...");
+    const res = stableMatching(applicants, projectsData)
+    console.log(res)
+    console.log(`Allocated ${res.length} projects! Writing to CSV...`);
 
-console.log("Parsed! Running allocation algorithm...");
-integerProgramming([], [], {A: 0.2});
+    console.log("Allocation script complete 🚀");
+}
 
-console.log(`Allocated with objective score ${456}. Writing to CSV...`);
-
-console.log("Allocation script complete 🚀");
+Allocation()

@@ -131,4 +131,4 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-data/processed_applicants.csv
+data/*
