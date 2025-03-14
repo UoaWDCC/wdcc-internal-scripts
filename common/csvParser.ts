@@ -61,7 +61,8 @@ export const parseCsv = (filePath: string): Promise<Applicant[]> => {
  * @param data Array of objects to write to CSV.
  * @param filePath Output CSV file path.
  */
-export const writeCsv = (data: unknown[], filePath: string): void => {
+
+export const writeCsv = (data: Applicant[], filePath: string): void => {
   const csv = Papa.unparse(data);
   fs.writeFileSync(filePath, csv, "utf8");
   console.log(`✅ CSV successfully written to ${filePath}`);
