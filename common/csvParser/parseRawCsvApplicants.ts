@@ -1,0 +1,58 @@
+import { Applicant } from "../models.js";
+import fs from "fs";
+import Papa from "papaparse";
+
+/**
+ * Parses a CSV file and returns an array of Applicant objects.
+ * @param filePath Path to the CSV file.
+ * @returns Promise resolving to an array of Applicant objects.
+ */
+export const parseRawCsvApplicants = (filePath: string): Promise<Applicant[]> => {
+  return new Promise((resolve, reject) => {
+    const fileContent = fs.readFileSync(filePath, "utf8");
+
+    Papa.parse(fileContent, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (result) => {
+        try {
+          const applicants: Applicant[] = result.data.map((row: any, index: number) => ({
+            timestamp: new Date(row["Timestamp"]),
+            id: `applicant-${index + 1}`,
+            name: row["What is your full name?"],
+            email: row["Email address?"],
+            github: row["What is your GitHub username?"],
+            major: row["What do you study? (Degree: major)"],
+            rolePreference: row["r"],
+            skills: row["Skills"]?.split(",").map((s: string) => s.trim()) || [],
+            backendPreference: parseInt(row["Backend Preference (1 = FE, 5 = BE)"], 10) || 0,
+            frontendExperience: parseInt(row["FE Dev Experience"], 10) || 0,
+            backendExperience: parseInt(row["How would you rate your experience level in the following areas? [Back-end dev]"], 10) || 0,
+            designExperience: parseInt(row["How would you rate your experience level in the following areas? [Design]"], 10) || 0,
+            testingExperience: parseInt(row["How would you rate your experience level in the following areas? [Testing]"], 10) || 0,
+            projectChoices: [
+              row["Your first choice:"],
+              row["Your second choice:"],
+              row["Your third choice:"],
+              row["Your fourth choice:"],
+              row["Your fifth choice:"],
+            ].filter(Boolean),
+            passionBlurb: row["What do you wish to gain from being on a project? (aim for ~100 words)"] || "",
+            portfolioLink: row["Do you have a Portfolio and/or CV? (insert a link here if so)"] || "",
+            additionalInfo: row["Anything else you would like us to know?"] || "",
+            execComments: row["EXEC INITIAL COMMENTS"] || "",
+            rizzLevel: parseInt(row["EXEC RATING (0 to 5)"], 10) || 0,
+            creativityHire: row["CREATIVITY HIRE (manual Design/Design-dev allocation)"]
+          }));
+
+          resolve(applicants);
+        } catch (error) {
+          reject(error);
+        }
+      },
+      error: (error : Error) => {
+        reject(error.message);
+      },
+    });
+  });
+};

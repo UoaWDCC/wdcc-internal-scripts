@@ -1,4 +1,5 @@
-import { parseRawCsvApplicants, writeCsv } from "../common/csvParser.js";
+import { parseRawCsvApplicants } from "../common/csvParser/parseRawCsvApplicants.js";
+import { writeCsv } from "../common/csvParser/writeCsv.js";
 import path from "path";
 
 console.log("Running preprocess script...");
@@ -13,7 +14,7 @@ if (!inputCsvPath) {
   process.exit(1);
 }
 
-// (convert backslashes to forward slashes)
+// (convert backslashes to forward slashes, maybe theres a better way to do this.)
 
 inputCsvPath = inputCsvPath.replace(/\\/g, "/");
 
@@ -24,7 +25,7 @@ const preProcess = async () => {
     const applicants = await parseRawCsvApplicants(inputCsvPath);
     
    
-    if (!Array.isArray(applicants) || applicants.length === 0) {
+    if (!applicants || applicants.length === 0) {
       console.error("❌ No valid applicants data found.");
       return;
     }

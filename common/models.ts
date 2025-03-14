@@ -17,6 +17,7 @@
       portfolioLink: string; //not used
       additionalInfo: string; //not used
       execComments: string; // not used
+      creativityHire: string; // if 
       rizzLevel: number; // not used
     };
 
