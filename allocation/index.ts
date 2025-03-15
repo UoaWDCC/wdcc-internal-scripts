@@ -1,11 +1,12 @@
 // --- This file mainly for I/O ---
 
-import {  parseCsvProjects, parseProcessedCsvApplicants } from "../common/csvParser.js";
+import { parseCsvProjects } from "../common/csvParser/parseCsvProjects.js";
+import { parseProcessedCsvApplicants } from "../common/csvParser/parseCsvProcessedApplicants.js";
 import { stableMatching } from "./algorithms/stableMatching.js";
 
 const Allocation = async() => {
     const projectsDataLocation = "./data/projectsData.csv"
-    const applicantsDataLocation = "./data/processed_applicants.csv" // get processed applicants
+    const applicantsDataLocation = "./data/processedApplicants.csv" // get processed applicants
     console.log("Running allocation script");
 
     console.log("Parsing Applicants CSV...");

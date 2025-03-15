@@ -1,4 +1,4 @@
-import { Applicant } from "../models.js";
+
 import fs from "fs";
 import Papa from "papaparse";
 

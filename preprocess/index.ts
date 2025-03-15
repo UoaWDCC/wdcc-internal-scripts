@@ -6,7 +6,7 @@ console.log("Running preprocess script...");
 
 
 let inputCsvPath = process.argv[2]; 
-const outputCsvPath = path.resolve("./data/processed_applicants.csv");
+const outputCsvPath = path.resolve("./data/processedApplicants.csv");
 
 if (!inputCsvPath) {
   console.error("❌ Error: Please provide a CSV file path as an argument.");
