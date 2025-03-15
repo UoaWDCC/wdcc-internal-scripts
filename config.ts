@@ -13,9 +13,9 @@ export const config = {
     outFileRejected: "applicants-rejected.csv",
   },
   allocation: {
-    inFileApplicants: "applicants-accepted.csv",
-    inFileTeams: "team-preferences.csv",
-    outFileFormat: "applicants-<team>.csv",
+    inFileApplicants: "./data/processedApplicants.csv",
+    inFileTeams: "./data/projectsData.csv",
+    outFileFormat: "./data/applicants-<team>.csv",
     /** @see calculateTotalUtility */
     A: 1,
     B: 1,

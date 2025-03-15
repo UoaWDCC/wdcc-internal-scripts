@@ -1,5 +1,7 @@
 # How to use these scripts
 
+Data [here](https://drive.google.com/drive/u/2/folders/1YmywtfQkJ557tyt6pU41PSGSBSShB9jG) (download both sheets as CSVs).
+
 ### Prod
 
 - Configure `config.ts`
