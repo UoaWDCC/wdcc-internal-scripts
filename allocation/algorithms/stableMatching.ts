@@ -40,7 +40,7 @@ export function stableMatching(
     const allocationResult: Map<string, ProjectAllocation> = new Map(
         projects.map(project => [project.name, new ProjectAllocation(project, projectTeamSize)])
     );
-    const leftOver : Applicant[] = []
+    const leftOver: Applicant[] = []
 
     // put applicants into a queue
     const applicantQueue = applicants.slice();
@@ -51,9 +51,9 @@ export function stableMatching(
             leftOver.push(applicant)
             continue
         }
-        
+
         let currAllocation: ProjectAllocation = allocationResult.get(currChoice)!;
-       
+
         if (currAllocation.allocated.size() < projectTeamSize) {
             currAllocation.allocated.enqueue(applicant);
             currAllocation.front_allocated += 1 - (applicant.backendPreference / 5);
@@ -76,10 +76,20 @@ export function stableMatching(
             }
         }
     }
-    console.log(`here are the leftovers!  ${leftOver}`)
+    console.log(`length of leftover:  ${leftOver.length}`)
     // change format to Allocation[]
-    return Array.from(allocationResult.values()).map(projectAllocation => ({
+    const arr: Allocation[] = Array.from(allocationResult.values()).map(projectAllocation => ({
         project: projectAllocation.project,
         applicants: projectAllocation.allocated.toArray()
     }));
+
+    for (let al of arr) {
+        console.log(al.project.name)
+        console.log(al.applicants.length)
+        for (let app of al.applicants) {
+            console.log(`----    ${app.name} : frontend exp ${app.frontendExperience} backend exp ${app.backendExperience} backend pref ${app.backendPreference}`)
+        }
+    }
+
+    return arr;
 }
