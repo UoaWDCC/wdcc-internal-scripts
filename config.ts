@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { calculateTotalUtility } from "./allocation/helper/objective.js"; // Imported for docs
+
 export const config = {
   common: {},
   preprocess: {
@@ -13,6 +16,11 @@ export const config = {
     inFileApplicants: "applicants-accepted.csv",
     inFileTeams: "team-preferences.csv",
     outFileFormat: "applicants-<team>.csv",
+    /** @see calculateTotalUtility */
+    A: 1,
+    B: 1,
+    C: 1,
+    D: 1,
   },
 };
 
