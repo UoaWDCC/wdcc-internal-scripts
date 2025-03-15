@@ -6,7 +6,8 @@ console.log("Running preprocess script...");
 
 
 let inputCsvPath = process.argv[2]; 
-const outputCsvPath = path.resolve("./data/processedApplicants.csv");
+const outputApplicantCsvPath = path.resolve("./data/processedApplicants.csv");
+const outputDesignerCsvPath = path.resolve("./data/designers.csv");
 
 if (!inputCsvPath) {
   console.error("❌ Error: Please provide a CSV file path as an argument.");
@@ -22,7 +23,7 @@ console.log(`Parsing CSV from: ${inputCsvPath}`);
 
 const preProcess = async () => {
   try {
-    const applicants = await parseRawCsvApplicants(inputCsvPath);
+    let applicants = await parseRawCsvApplicants(inputCsvPath);
     
    
     if (!applicants || applicants.length === 0) {
@@ -31,12 +32,26 @@ const preProcess = async () => {
     }
 
     console.log(`✅ Successfully parsed ${applicants.length} applicants.`);
-    console.log(applicants.slice(0, 3)); // temp show sample of applicants
+    
+    const designers = applicants.filter(applicant => applicant.creativityHire?.toLowerCase() === "creative maybe" || applicant.creativityHire?.toLowerCase() === "creative guarantee");
+
+    console.log(`There are ${designers.length} designers`)
+    
+    console.log("Filtering applicants based on length of passionBlurb 100 char")
+    applicants = applicants.filter(applicant => applicant.passionBlurb && applicant.passionBlurb.length >= 100);
+    
+    console.log("Filtering applicants based on if they're a designer")
+    applicants = applicants.filter(applicant => !designers.includes(applicant));
 
     console.log("Writing to CSV...");
-    writeCsv(applicants, outputCsvPath);
+    writeCsv(applicants, outputApplicantCsvPath);
 
-    console.log(`✅ Preprocess complete. Output saved to: ${outputCsvPath} 🚀`);
+    console.log(`✅ Preprocess of applicants complete. Output saved to: ${outputApplicantCsvPath} 🚀`);
+
+    console.log("Writing designers")
+    writeCsv(designers, outputDesignerCsvPath);
+    
+    console.log(`✅ Preprocess of designers complete. Output saved to: ${outputApplicantCsvPath} 🚀`);
   } catch (error) {
     console.error("❌ Error during CSV parsing:", error);
   }
