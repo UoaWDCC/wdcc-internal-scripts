@@ -36,16 +36,24 @@ export function stableMatching(
     projects: Project[]
 ): Allocation[] {
     const projectTeamSize = Math.floor(applicants.length / projects.length);
+    console.log(projectTeamSize)
     const allocationResult: Map<string, ProjectAllocation> = new Map(
         projects.map(project => [project.name, new ProjectAllocation(project, projectTeamSize)])
     );
+    const leftOver : Applicant[] = []
 
     // put applicants into a queue
     const applicantQueue = applicants.slice();
     while (applicantQueue.length !== 0) {
         let applicant: Applicant = applicantQueue.shift()!;
         let currChoice: string = applicant.projectChoices.shift()!;
+        if (!currChoice) {
+            leftOver.push(applicant)
+            continue
+        }
+        
         let currAllocation: ProjectAllocation = allocationResult.get(currChoice)!;
+       
         if (currAllocation.allocated.size() < projectTeamSize) {
             currAllocation.allocated.enqueue(applicant);
             currAllocation.front_allocated += 1 - (applicant.backendPreference / 5);
@@ -68,7 +76,7 @@ export function stableMatching(
             }
         }
     }
-
+    console.log(`here are the leftovers!  ${leftOver}`)
     // change format to Allocation[]
     return Array.from(allocationResult.values()).map(projectAllocation => ({
         project: projectAllocation.project,
