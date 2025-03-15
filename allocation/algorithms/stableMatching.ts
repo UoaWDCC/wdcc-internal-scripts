@@ -1,8 +1,8 @@
-// --- script for gale shapley --- 
+// --- script for gale shapley ---
 
 import { Allocation, Applicant, Project } from "../../common/models.js";
 
-import { MinPriorityQueue, IGetCompareValue } from "@datastructures-js/priority-queue";
+import { IGetCompareValue, MinPriorityQueue } from "@datastructures-js/priority-queue";
 
 function _calculateContribution(projectAllocation: ProjectAllocation, applicant: Applicant): number {
     // how to calculate the multipliers
@@ -45,21 +45,20 @@ export function stableMatching(
     // put applicants into a queue
     const applicantQueue = applicants.slice();
     while (applicantQueue.length !== 0) {
-        let applicant: Applicant = applicantQueue.shift()!;
-        let currChoice: string = applicant.projectChoices.shift()!;
+        const applicant: Applicant = applicantQueue.shift()!;
+        const currChoice: string = applicant.projectChoices.shift()!;
         if (!currChoice) {
             leftOver.push(applicant)
             continue
         }
 
-        let currAllocation: ProjectAllocation = allocationResult.get(currChoice)!;
-
+        const currAllocation: ProjectAllocation = allocationResult.get(currChoice)!;
         if (currAllocation.allocated.size() < projectTeamSize) {
             currAllocation.allocated.enqueue(applicant);
             currAllocation.front_allocated += 1 - (applicant.backendPreference / 5);
             currAllocation.back_allocated += applicant.backendPreference / 5;
         } else {
-            let lowest: Applicant = currAllocation.allocated.front()!;
+            const lowest: Applicant = currAllocation.allocated.front()!;
             currAllocation.front_allocated += 1 - (applicant.backendPreference / 5);
             currAllocation.back_allocated += applicant.backendPreference / 5;
 
@@ -83,10 +82,10 @@ export function stableMatching(
         applicants: projectAllocation.allocated.toArray()
     }));
 
-    for (let al of arr) {
+    for (const al of arr) {
         console.log(al.project.name)
         console.log(al.applicants.length)
-        for (let app of al.applicants) {
+        for (const app of al.applicants) {
             console.log(`----    ${app.name} : frontend exp ${app.frontendExperience} backend exp ${app.backendExperience} backend pref ${app.backendPreference}`)
         }
     }
