@@ -39,8 +39,8 @@ const preProcess = async () => {
     
     console.log("Filtering applicants based on if they have a passionBlurb < 100 char ")
 
-    const flaggedApplicants = applicants.filter(applicant => applicant.passionBlurb && applicant.passionBlurb.length < 100);
-    applicants = applicants.filter(applicant => applicant.passionBlurb && applicant.passionBlurb.length >= 100);
+    const flaggedApplicants = applicants.filter(applicant => (applicant.passionBlurb && applicant.passionBlurb.length < 100) || applicant.rizzLevel === 1);
+    applicants = applicants.filter(applicant => (applicant.passionBlurb && applicant.passionBlurb.length >= 100) || applicant.rizzLevel === 1);
     
     console.log("Filtering applicants based on if they're a designer")
     applicants = applicants.filter(applicant => !designers.includes(applicant));
