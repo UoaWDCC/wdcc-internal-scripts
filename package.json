@@ -1,41 +1,49 @@
-{
-  "name": "projects-allocation-script",
-  "version": "1.0.0",
-  "description": "Script to automate the allocation of >300 applicants to 16 project teams for Projects interviews.",
-  "homepage": "https://github.com/UoaWDCC/projects-allocation-script#readme",
-  "bugs": {
-    "url": "https://github.com/UoaWDCC/projects-allocation-script/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/UoaWDCC/projects-allocation-script.git"
-  },
-  "license": "ISC",
-  "author": "tech@wdcc.co.nz",
-  "type": "module",
-  "main": "",
-  "scripts": {
-    "build": "pnpm install && tsc",
-    "dev": "tsc --watch",
-    "lint": "eslint **/*.ts --fix",
-    "preprocess": "node dist/preprocess/index.js",
-    "filter": "node dist/filter/index.js",
-    "allocate": "node dist/allocation/index.js",
-    "p": "pnpm run preprocess",
-    "f": "pnpm run filter",
-    "a": "pnpm run allocate"
-  },
-  "volta": {
-    "node": "22.14.0",
-    "pnpm": "10.6.1"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.22.0",
-    "eslint": "^9.22.0",
-    "globals": "^16.0.0",
-    "jiti": "^2.4.2",
-    "prettier": "^3.5.3",
-    "typescript": "^5.8.2",
-    "typescript-eslint": "^8.26.0"
+  {
+    "name": "projects-allocation-script",
+    "version": "1.0.0",
+    "description": "Script to automate the allocation of >300 applicants to 16 project teams for Projects interviews.",
+    "homepage": "https://github.com/UoaWDCC/projects-allocation-script#readme",
+    "bugs": {
+      "url": "https://github.com/UoaWDCC/projects-allocation-script/issues"
+    },
+    "repository": {
+      "type": "git",
+      "url": "git+https://github.com/UoaWDCC/projects-allocation-script.git"
+    },
+    "license": "ISC",
+    "author": "tech@wdcc.co.nz",
+    "type": "module",
+    "main": "",
+    "scripts": {
+      "build": "pnpm install && tsc",
+      "dev": "tsc --watch",
+      "lint": "eslint **/*.ts --fix",
+      "preprocess": "node dist/preprocess/index.js",
+      "filter": "node dist/filter/index.js",
+      "allocate": "node dist/allocation/index.js",
+      "p": "pnpm run preprocess",
+      "f": "pnpm run filter",
+      "a": "pnpm run allocate"
+    },
+    "volta": {
+      "node": "22.14.0",
+      "pnpm": "10.6.1"
+    },
+    "devDependencies": {
+      "@eslint/js": "^9.22.0",
+      "@types/node": "^22.13.10",
+      "eslint": "^9.22.0",
+      "globals": "^16.0.0",
+      "jiti": "^2.4.2",
+      "prettier": "^3.5.3",
+      "typescript": "^5.8.2",
+      "typescript-eslint": "^8.26.0"
+    },
+    "dependencies": {
+      "@types/papaparse": "^5.3.15",
+      "fs": "0.0.1-security",
+    "papaparse": "^5.5.2",
+    "@datastructures-js/priority-queue": "^6.3.2"
   }
+  
 }
