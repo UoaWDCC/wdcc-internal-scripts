@@ -134,3 +134,4 @@ dist
 data/designers.csv
 data/projectsData.csv
 data/processedApplicants.csv
+data/flaggedApplicants.csv
