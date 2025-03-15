@@ -2,15 +2,11 @@
 import { calculateTotalUtility } from "./allocation/helper/objective.js"; // Imported for docs
 
 export const config = {
-  common: {},
   preprocess: {
-    inFile: "applicants.csv",
-    outFile: "applicants-processed.csv",
-  },
-  filter: {
-    inFile: "applicants-processed.csv",
-    outFile: "applicants-accepted.csv",
-    outFileRejected: "applicants-rejected.csv",
+    inFile: "WDCC Projects Member Application Form 2025 (Responses) - Form responses 1.csv",
+    outFile: "./data/processedApplicants.csv",
+    outFileDesigners: "./data/designers.csv",
+    outFileFlagged: "./data/flaggedApplicants.csv",
   },
   allocation: {
     inFileApplicants: "./data/processedApplicants.csv",
