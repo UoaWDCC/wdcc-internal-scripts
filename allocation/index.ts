@@ -18,7 +18,7 @@ const Allocation = async() => {
 
     console.log("Parsed! Running allocation algorithm...");
     const res = stableMatching(applicants, projectsData)
-    
+
     console.log(`Allocated ${res.length} projects! Writing to CSV...`);
 
     console.log("Allocation script complete 🚀");
