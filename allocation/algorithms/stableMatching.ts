@@ -8,10 +8,10 @@ function _calculateContribution(projectAllocation: ProjectAllocation, applicant:
     // how to calculate the multipliers
     const FRONT = 1;
     const BACK = 1;
-    const front_multiplier = FRONT * Math.floor((projectAllocation.teamSize * (1 - (projectAllocation.project.backendWeighting / 100)) - projectAllocation.front_allocated));
-    const back_multiplier = BACK * Math.floor((projectAllocation.teamSize * (projectAllocation.project.backendWeighting / 100)) - projectAllocation.back_allocated);
+    const front_multiplier = FRONT * Math.floor((projectAllocation.teamSize * (1 - (projectAllocation.project.backendWeighting / 7)) - projectAllocation.front_allocated));
+    const back_multiplier = BACK * Math.floor((projectAllocation.teamSize * (projectAllocation.project.backendWeighting / 7)) - projectAllocation.back_allocated);
 
-    return projectAllocation.project.priority * (front_multiplier * applicant.frontendExperience + back_multiplier * applicant.backendExperience) + projectAllocation.project.backendWeighting * applicant.backendPreference;
+    return 2 * (projectAllocation.project.priority - 1.5) * (front_multiplier * applicant.frontendExperience + back_multiplier * applicant.backendExperience) + projectAllocation.project.backendWeighting * applicant.backendPreference;
 }
 
 const getContribution: (project: ProjectAllocation) => IGetCompareValue<Applicant> = (project: ProjectAllocation) => (applicant: Applicant) => _calculateContribution(project, applicant);
@@ -36,15 +36,22 @@ export function stableMatching(
     projects: Project[]
 ): Allocation[] {
     const projectTeamSize = Math.floor(applicants.length / projects.length);
+    console.log(projectTeamSize)
     const allocationResult: Map<string, ProjectAllocation> = new Map(
         projects.map(project => [project.name, new ProjectAllocation(project, projectTeamSize)])
     );
+    const leftOver: Applicant[] = []
 
     // put applicants into a queue
     const applicantQueue = applicants.slice();
     while (applicantQueue.length !== 0) {
         const applicant: Applicant = applicantQueue.shift()!;
         const currChoice: string = applicant.projectChoices.shift()!;
+        if (!currChoice) {
+            leftOver.push(applicant)
+            continue
+        }
+
         const currAllocation: ProjectAllocation = allocationResult.get(currChoice)!;
         if (currAllocation.allocated.size() < projectTeamSize) {
             currAllocation.allocated.enqueue(applicant);
@@ -68,10 +75,20 @@ export function stableMatching(
             }
         }
     }
-
+    console.log(`length of leftover:  ${leftOver.length}`)
     // change format to Allocation[]
-    return Array.from(allocationResult.values()).map(projectAllocation => ({
+    const arr: Allocation[] = Array.from(allocationResult.values()).map(projectAllocation => ({
         project: projectAllocation.project,
         applicants: projectAllocation.allocated.toArray()
     }));
+
+    for (let al of arr) {
+        console.log(al.project.name)
+        console.log(al.applicants.length)
+        for (let app of al.applicants) {
+            console.log(`----    ${app.name} : frontend exp ${app.frontendExperience} backend exp ${app.backendExperience} backend pref ${app.backendPreference}`)
+        }
+    }
+
+    return arr;
 }
