@@ -82,10 +82,10 @@ export function stableMatching(
         applicants: projectAllocation.allocated.toArray()
     }));
 
-    for (let al of arr) {
+    for (const al of arr) {
         console.log(al.project.name)
         console.log(al.applicants.length)
-        for (let app of al.applicants) {
+        for (const app of al.applicants) {
             console.log(`----    ${app.name} : frontend exp ${app.frontendExperience} backend exp ${app.backendExperience} backend pref ${app.backendPreference}`)
         }
     }
