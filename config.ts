@@ -17,6 +17,7 @@ export const config = {
     B: 1,
     C: 1,
     D: 1,
+    numAscents: 100,
   },
 };
 
