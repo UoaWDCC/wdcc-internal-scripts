@@ -52,7 +52,7 @@ export function calculateUtilityOfAllocation(allocation: Allocation, A: number, 
 /** 5 for first choice, 4 for second choice ... 0 for not chosen */
 function getApplicantUtilityFromProject(applicant: Applicant, project: Project): number {
   for (const [i, choice] of applicant.projectChoices.entries()) {
-    if (choice === project.id) {
+    if (choice === project.name) {
       return 5 - i;
     }
   }

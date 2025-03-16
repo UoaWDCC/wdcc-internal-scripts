@@ -13,14 +13,14 @@ export const parseCsvProjects = (filePath: string): Promise<Project[]> => {
       complete: (result) => {
         try {
           const projects: Project[] = result.data.map((row: any, index: number) => ({
-            id: row["name"],
-            name: row["name"],
-            backendDifficulty: row["backendDifficulty"],
-            frontendDifficulty: row["frontendDifficulty"],
-            backendWeighting: row["backendWeighting"],
-            priority: row["Priority"]
+            id: index,
+            name: row["What is the name of your project?"],
+            backendDifficulty: row["How difficult do you expect your backend development to be?"],
+            frontendDifficulty: row["How difficult do you expect your frontend development to be?"],
+            backendWeighting: row["What's the backend-frontend weighting of your project?"],
+            priority: row["What's your preference for beginners vs experienced members?"]
           }));
-
+   
           resolve(projects);
         } catch (error) {
           reject(error);
