@@ -17,9 +17,42 @@ type AnnotatedAllocation = Allocation & { utility: number };
  */
 type Swap = { alloc1: AnnotatedAllocation, i: number, alloc2: AnnotatedAllocation, j: number };
 
-const {A, B, C, D} = config.allocation;
+const {A, B, C, D, numAscents} = config.allocation;
 
+/**
+ * Uses next descent to find a good allocation of applicants to projects
+ * @see https://en.wikipedia.org/wiki/Local_search_(optimization)
+ *
+ * @param applicants A list of applicants
+ * @param projects A list of project preferences
+ * @returns A list of allocations: { project, applicants[] }
+ */
 export function heuristicAscent(applicants: Applicant[], projects: Project[]): Allocation[] {
+  let highestUtility = 0;
+  let bestAllocation: Allocation[] = [];
+
+  // Repeat singleHeuristicAscent() numAscents times
+  for (let i = 0; i < numAscents; i++) {
+    const [allocation, utility] = singleHeuristicAscent(applicants, projects);
+    console.log(`Found allocation of utility ${utility}`);
+    if (utility > highestUtility) {
+      console.log(`Keeping! (Previous best was ${highestUtility})`);
+      highestUtility = utility;
+      bestAllocation = allocation;
+    }
+  }
+
+  return bestAllocation;
+}
+
+/**
+ * Performs a single run of heuristicAscent (random reset + ascent towards higher utility).
+ *
+ * @param applicants
+ * @param projects
+ * @returns 2-tuple: [set of final allocations, final utility]
+ */
+function singleHeuristicAscent(applicants: Applicant[], projects: Project[]): [Allocation[], number] {
   const rawAllocations = createAllocations(projects); // This allocation gets mutated
   randomlyAllocate(rawAllocations, applicants);
 
@@ -47,7 +80,7 @@ export function heuristicAscent(applicants: Applicant[], projects: Project[]): A
     totalUtility += utilityChange;
   }
 
-  return allocations;
+  return [allocations, totalUtility];
 }
 
 /**
