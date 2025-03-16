@@ -27,7 +27,8 @@ const allocate = async() => {
   // Output
   console.log(`Writing to CSVs...`);
   allocations.forEach((allocation) => {
-    const safeProjectName = allocation.project.name.replace('/', '_');
+    const safeProjectName = allocation.project.name.replace(/[\\/:.]/, '_');
+    console.log(`${safeProjectName} (${allocation.project.id}) has ${allocation.applicants.length} applicants.`)
     const outFileName = outFileFormat.replace('<team>', safeProjectName);
     writeCsv(allocation.applicants, outFileName);
   })
