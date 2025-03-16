@@ -3,7 +3,7 @@ import { calculateTotalUtility } from "./allocation/helper/objective.js"; // Imp
 
 export const config = {
   preprocess: {
-    inFile: "WDCC Projects Member Application Form 2025 (Responses) - Form responses 1.csv",
+    inFile: "./data/applicants.csv",
     outFile: "./data/processedApplicants.csv",
     outFileDesigners: "./data/designers.csv",
     outFileFlagged: "./data/flaggedApplicants.csv",
