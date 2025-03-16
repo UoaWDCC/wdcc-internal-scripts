@@ -20,7 +20,7 @@ export const parseCsvProjects = (filePath: string): Promise<Project[]> => {
             backendWeighting: row["What's the backend-frontend weighting of your project?"],
             priority: row["What's your preference for beginners vs experienced members?"]
           }));
-
+   
           resolve(projects);
         } catch (error) {
           reject(error);

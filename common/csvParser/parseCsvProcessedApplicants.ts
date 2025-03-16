@@ -17,7 +17,7 @@ export const parseProcessedCsvApplicants = (filePath: string): Promise<Applicant
         try {
           const applicants: Applicant[] = result.data.map((row: any) => ({
             timestamp: new Date(row["timestamp"]), // Directly use the "timestamp" column
-            id: row["id"], // Directly use the "id" column
+            id: parseInt(row["id"]), // Directly use the "id" column
             name: row["name"], // Directly use the "name" column
             email: row["email"], // Directly use the "email" column
             github: row["github"], // Directly use the "github" column
@@ -30,11 +30,11 @@ export const parseProcessedCsvApplicants = (filePath: string): Promise<Applicant
             designExperience: parseInt(row["designExperience"], 10),
             testingExperience: parseInt(row["testingExperience"], 10),
             projectChoices: row["projectChoices"]?.split(",").map((choice: string) => choice.trim()) || [], // Split projectChoices string into array
-            passionBlurb: row["passionBlurb"] || "", // Directly use the "passionBlurb" column
-            portfolioLink: row["portfolioLink"] || "", // Directly use the "portfolioLink" column
-            additionalInfo: row["additionalInfo"] || "", // Directly use the "additionalInfo" column
-            execComments: row["execComments"] || "", // Directly use the "execComments" column
-            rizzLevel: parseInt(row["rizzLevel"], 10) || 0, // Directly use the "rizzLevel" column
+            passionBlurb: row["passionBlurb"] || "", 
+            portfolioLink: row["portfolioLink"] || "",
+            additionalInfo: row["additionalInfo"] || "", 
+            execComments: row["execComments"] || "", 
+            rizzLevel: parseInt(row["rizzLevel"], 10) || 0, 
             creativityHire: row["creativityHire"]
           }));
 

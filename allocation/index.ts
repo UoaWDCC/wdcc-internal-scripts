@@ -20,13 +20,14 @@ const allocate = async() => {
   // Algorithm
   console.log("Parsed! Running allocation algorithm...");
   const allocations = stableMatching(applicants, projectsData)
+
   const finalObjectiveScore = calculateTotalUtility(allocations, A, B, C, D)
   console.log(`Allocated ${allocations.length} projects! Objective score: ${finalObjectiveScore}`);
 
   // Output
   console.log(`Writing to CSVs...`);
   allocations.forEach((allocation) => {
-    const outFileName = outFileFormat.replace('<team>', allocation.project.name)
+    const outFileName = outFileFormat.replace('<team>', allocation.project.name).trim()
     writeCsv(allocation.applicants, outFileName)
   })
 
