@@ -70,14 +70,33 @@ function singleHeuristicAscent(applicants: Applicant[], projects: Project[]): [A
   let numIgnoresInRow = 0;
   const maxIgnoresInRow = getMaxIgnores(projects.length, applicants.length);
   while (numIgnoresInRow < maxIgnoresInRow) {
+    // Try swap
     const utilityChange = swapApplicants({
       ...swap,
       alloc1: allocations[swap.alloc1Index],
       alloc2: allocations[swap.alloc2Index]
     });
 
-    if (utilityChange === 0) numIgnoresInRow++;
-    totalUtility += utilityChange;
+    // console.log(`******************************** ${numIgnoresInRow}/${maxIgnoresInRow}: ${utilityChange}`)
+
+    // Check and update bookkeeping
+    if (utilityChange === 0) {
+      numIgnoresInRow++;
+    } else {
+      numIgnoresInRow = 0;
+      totalUtility += utilityChange;
+    }
+
+    // Move to next swap (try out all possible swaps)
+    const alloc1Len = allocations[swap.alloc1Index].applicants.length;
+    swap.i = (swap.i + 1) % alloc1Len;
+    if (swap.i === 0) swap.alloc1Index = swap.alloc1Index % projects.length;
+    if (swap.i === 0 && swap.alloc1Index === 0) {
+      // Move second pointer only once first pointer has done a full applicantsPerProject * numProjects sweep
+      const alloc2Len = allocations[swap.alloc2Index].applicants.length;
+      swap.j = (swap.j + 1) % alloc2Len;
+      if (swap.j === 0) swap.alloc2Index = swap.alloc2Index % projects.length;
+    }
   }
 
   return [allocations, totalUtility];
@@ -90,7 +109,7 @@ function singleHeuristicAscent(applicants: Applicant[], projects: Project[]): [A
 function getMaxIgnores(numProjects: number, numApplicants: number) {
   if (numProjects === 0 || numApplicants === 0) return 0;
   const maxApplicantsPerProject = Math.ceil(numApplicants / numProjects);
-  return maxApplicantsPerProject * (numProjects - 1);
+  return (maxApplicantsPerProject * numProjects) * (maxApplicantsPerProject * (numProjects - 1));
 }
 
 /**
@@ -120,7 +139,7 @@ function swapApplicants(swap: Swap): number {
     alloc2.utility = alloc2NewUtility;
     return netChangeInUtility;
   } else {
-    console.log(`Found swap with net utility change ${netChangeInUtility}. Ignoring.`);
+    // console.log(`Found swap with net utility change ${netChangeInUtility}. Ignoring.`);
     // Swap back
     [alloc1.applicants[i], alloc2.applicants[j]] = [alloc2.applicants[j], alloc1.applicants[i]];
     return 0; // Report 0 since no swap
