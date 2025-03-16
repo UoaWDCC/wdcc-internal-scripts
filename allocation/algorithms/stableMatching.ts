@@ -55,13 +55,7 @@ export function stableMatching(
         }
 
         const currAllocation: ProjectAllocation = allocationResult.get(currChoice)!;
-        if (applicant.name === "Andy Huang") {
-            console.log(`Andy Huang Choices: ${applicant.projectChoices}`)
-        }
         if (currAllocation.allocated.size() < projectTeamSize) {
-            if (applicant.name === "Andy Huang") {
-                console.log("Andy Huang added (1)")
-            }
             currAllocation.allocated.enqueue(applicant);
             currAllocation.front_allocated += 1 - (applicant.backendPreference / 5);
             currAllocation.back_allocated += applicant.backendPreference / 5;
@@ -71,28 +65,16 @@ export function stableMatching(
             currAllocation.back_allocated += applicant.backendPreference / 5;
 
             if (getContribution(currAllocation)(applicant) > getContribution(currAllocation)(lowest)) {
-                if (applicant.name === "Andy Huang") {
-                    console.log("Andy Huang added (2)")
-                }
                 currAllocation.allocated.dequeue();
                 currAllocation.front_allocated -= 1 - (lowest.backendPreference / 5);
                 currAllocation.back_allocated -= lowest.backendPreference / 5;
                 currAllocation.allocated.enqueue(applicant);
                 currAllocation.front_allocated += 1 - (applicant.backendPreference / 5);
                 currAllocation.back_allocated += applicant.backendPreference / 5;
-                if (lowest.name === "Andy Huang") {
-                    console.log("Andy Huang is now removed!")
-                }
                 applicantQueue.push(lowest);
             } else {
-                if (applicant.name === "Andy Huang") {
-                    console.log("Andy Huang not added")
-                }
                 applicantQueue.push(applicant);
             }
-        }
-        if (applicant.name === "Andy Huang") {
-            console.log(`Andy Huang 2 Choices: ${applicant.projectChoices}`)
         }
     }
     console.log(`length of leftover:  ${leftOver.length}`)
