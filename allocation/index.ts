@@ -4,6 +4,7 @@ import { parseProcessedCsvApplicants } from "../common/csvParser/parseCsvProcess
 import { parseCsvProjects } from "../common/csvParser/parseCsvProjects.js";
 import { writeCsv } from "../common/csvParser/writeCsv.js";
 import { config } from "../config.js";
+import { heuristicAscent } from "./algorithms/heuristicAscent.js";
 import { stableMatching } from "./algorithms/stableMatching.js";
 import { calculateTotalUtility } from "./helper/objective.js";
 
@@ -22,7 +23,8 @@ const allocate = async() => {
   const allocations = stableMatching(applicants, projectsData);
 
   const finalObjectiveScore = calculateTotalUtility(allocations, A, B, C, D);
-  console.log(`Allocated ${allocations.length} projects! Objective score: ${finalObjectiveScore}`);
+  const utilityPerApplicant = (finalObjectiveScore / applicants.length).toFixed(2);
+  console.log(`Allocated ${allocations.length} projects! Total utility: ${finalObjectiveScore}. Utility per applicant: ${utilityPerApplicant}`);
 
   // Output
   console.log(`Writing to CSVs...`);
