@@ -19,7 +19,7 @@ export const parseRawCsvApplicants = (filePath: string): Promise<Applicant[]> =>
         try {
           const applicants: Applicant[] = result.data.map((row: any, index: number) => ({
             timestamp: new Date(row["Timestamp"]),
-            id: `applicant-${index + 1}`,
+            id: index,
             name: row["What is your full name?"],
             email: row["Email address?"],
             github: row["What is your GitHub username?"],

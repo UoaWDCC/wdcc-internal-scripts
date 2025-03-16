@@ -1,6 +1,6 @@
 export type Applicant = {
   timestamp: Date;
-  id: string;
+  id: number;
   name: string;
   email: string;
   github: string;
@@ -22,7 +22,7 @@ export type Applicant = {
 };
 
 export type Project = {
-  id: string;
+  id: number;
   name: string;
   backendDifficulty: number;
   frontendDifficulty: number;
