@@ -35,7 +35,7 @@ export function stableMatching(
     applicants: Applicant[],
     projects: Project[]
 ): Allocation[] {
-    const projectTeamSize = Math.floor(applicants.length / projects.length);
+    const projectTeamSize = Math.floor(applicants.length / projects.length) + 1;
     console.log(projectTeamSize)
     const allocationResult: Map<string, ProjectAllocation> = new Map(
         projects.map(project => [project.name, new ProjectAllocation(project, projectTeamSize)])
@@ -43,7 +43,9 @@ export function stableMatching(
     const leftOver: Applicant[] = []
 
     // put applicants into a queue
-    const applicantQueue = applicants.slice();
+    const copyApplicant = structuredClone(applicants)
+    const applicantQueue = structuredClone(applicants);
+
     while (applicantQueue.length !== 0) {
         const applicant: Applicant = applicantQueue.shift()!;
         const currChoice: string = applicant.projectChoices.shift()!;
@@ -53,7 +55,13 @@ export function stableMatching(
         }
 
         const currAllocation: ProjectAllocation = allocationResult.get(currChoice)!;
+        if (applicant.name === "Andy Huang") {
+            console.log(`Andy Huang Choices: ${applicant.projectChoices}`)
+        }
         if (currAllocation.allocated.size() < projectTeamSize) {
+            if (applicant.name === "Andy Huang") {
+                console.log("Andy Huang added (1)")
+            }
             currAllocation.allocated.enqueue(applicant);
             currAllocation.front_allocated += 1 - (applicant.backendPreference / 5);
             currAllocation.back_allocated += applicant.backendPreference / 5;
@@ -63,16 +71,28 @@ export function stableMatching(
             currAllocation.back_allocated += applicant.backendPreference / 5;
 
             if (getContribution(currAllocation)(applicant) > getContribution(currAllocation)(lowest)) {
+                if (applicant.name === "Andy Huang") {
+                    console.log("Andy Huang added (2)")
+                }
                 currAllocation.allocated.dequeue();
                 currAllocation.front_allocated -= 1 - (lowest.backendPreference / 5);
                 currAllocation.back_allocated -= lowest.backendPreference / 5;
                 currAllocation.allocated.enqueue(applicant);
                 currAllocation.front_allocated += 1 - (applicant.backendPreference / 5);
                 currAllocation.back_allocated += applicant.backendPreference / 5;
+                if (lowest.name === "Andy Huang") {
+                    console.log("Andy Huang is now removed!")
+                }
                 applicantQueue.push(lowest);
             } else {
+                if (applicant.name === "Andy Huang") {
+                    console.log("Andy Huang not added")
+                }
                 applicantQueue.push(applicant);
             }
+        }
+        if (applicant.name === "Andy Huang") {
+            console.log(`Andy Huang 2 Choices: ${applicant.projectChoices}`)
         }
     }
     console.log(`length of leftover:  ${leftOver.length}`)
@@ -82,12 +102,19 @@ export function stableMatching(
         applicants: projectAllocation.allocated.toArray()
     }));
 
+    // change the applicants list to the original applicant list
     for (const al of arr) {
-        console.log(al.project.name)
-        console.log(al.applicants.length)
-        for (const app of al.applicants) {
-            console.log(`----    ${app.name} : frontend exp ${app.frontendExperience} backend exp ${app.backendExperience} backend pref ${app.backendPreference}`)
+        al.applicants = al.applicants.map(applicant => copyApplicant.find(a => a.id === applicant.id)!)
+    }
+
+    console.log("Leftover")
+    for (let app of leftOver) {
+        const a = copyApplicant.find(a => a.id === app.id)
+        if (!a) {
+            console.log(`----${app.name} : ${app.projectChoices} `)
+            continue
         }
+        console.log(`----${app.name} : ${a.projectChoices.map(project => project.substring(0, 5))} `)
     }
 
     return arr;
