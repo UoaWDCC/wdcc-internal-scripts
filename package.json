@@ -18,6 +18,7 @@
       "build": "pnpm install && tsc",
       "dev": "tsc --watch",
       "lint": "eslint **/*.ts --fix",
+      "lint:prettier": "prettier --write --config .prettierrc .",
       "preprocess": "node dist/preprocess/index.js",
       "filter": "node dist/filter/index.js",
       "allocate": "node dist/allocation/index.js",
@@ -45,5 +46,5 @@
     "papaparse": "^5.5.2",
     "@datastructures-js/priority-queue": "^6.3.2"
   }
-  
+
 }
