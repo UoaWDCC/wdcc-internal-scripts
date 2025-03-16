@@ -11,7 +11,7 @@ export const config = {
   allocation: {
     inFileApplicants: "./data/processedApplicants.csv",
     inFileTeams: "./data/projectsData.csv",
-    outFileFormat: "./data/applicants-<team>.csv",
+    outFileFormat: "./data/out/applicants-<team>.csv",
     /** @see calculateTotalUtility */
     A: 1,
     B: 1,
