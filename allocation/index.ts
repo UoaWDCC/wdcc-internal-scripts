@@ -13,22 +13,23 @@ const allocate = async() => {
 
   // Input
   console.log("Parsing Applicants CSV...");
-  const applicants = await parseProcessedCsvApplicants(inFileApplicants)
+  const applicants = await parseProcessedCsvApplicants(inFileApplicants);
   console.log("Parsing Projects CSV...");
-  const projectsData =  await parseCsvProjects(inFileTeams)
+  const projectsData =  await parseCsvProjects(inFileTeams);
 
   // Algorithm
   console.log("Parsed! Running allocation algorithm...");
-  const allocations = stableMatching(applicants, projectsData)
+  const allocations = stableMatching(applicants, projectsData);
 
-  const finalObjectiveScore = calculateTotalUtility(allocations, A, B, C, D)
+  const finalObjectiveScore = calculateTotalUtility(allocations, A, B, C, D);
   console.log(`Allocated ${allocations.length} projects! Objective score: ${finalObjectiveScore}`);
 
   // Output
   console.log(`Writing to CSVs...`);
   allocations.forEach((allocation) => {
-    const outFileName = outFileFormat.replace('<team>', allocation.project.name).trim()
-    writeCsv(allocation.applicants, outFileName)
+    const safeProjectName = allocation.project.name.replace('/', '_');
+    const outFileName = outFileFormat.replace('<team>', safeProjectName);
+    writeCsv(allocation.applicants, outFileName);
   })
 
   console.log("Allocation script complete 🚀");
