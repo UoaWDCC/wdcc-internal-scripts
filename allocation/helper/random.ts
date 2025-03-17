@@ -1,4 +1,4 @@
-import { Allocation, Applicant } from "../../common/models.js";
+import { Allocation, Applicant, Project } from "../../common/models.js";
 
 /**
  * Randomly orders the array. Does not mutate the array.
@@ -14,11 +14,17 @@ function shuffleArray<T>(array: T[]) {
 }
 
 /**
- * Randomly allocates applicants evenly to projects (allocations).
+ * Randomly allocates applicants evenly to projects.
  * Divies up any remainder randomly as well (if projects % applicants != 0).
- * Mutates allocations but not applicants.
+ * Doesn't mutate anything.
+ *
+ * @returns	A list of allocations { project, applicants[] }.
  */
-export function randomlyAllocate(allocations: Allocation[], applicants: Applicant[]) {
+export function randomlyAllocate(projects: Project[], applicants: Applicant[]): Allocation[] {
+  // Init allocations
+  const allocations: Allocation[] = projects.map((project) => ({ project, applicants: [] }));
+
+  // Stats
   const numProjects = allocations.length;
   const numApplicants = applicants.length;
   const applicantsPerProject = Math.floor(numApplicants / numProjects);
@@ -42,4 +48,6 @@ export function randomlyAllocate(allocations: Allocation[], applicants: Applican
     shuffledAllocations[i].applicants = shuffledApplicants.slice(nextApplicant, nextApplicant + numApplicantsToTake);
     nextApplicant += numApplicantsToTake;
   }
+
+  return allocations;
 }

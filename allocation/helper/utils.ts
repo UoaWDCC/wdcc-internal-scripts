@@ -1,10 +1,4 @@
-import { Allocation, Project } from "../../common/models.js";
-import { Applicant } from "../../common/models.js";
-
-/** Projects -> Allocations */
-export function createAllocations(projects: Project[]): Allocation[] {
-    return projects.map((project) => ({ project, applicants: [] }));
-}
+import { Allocation, Applicant } from "../../common/models.js";
 
 export function logAllocationRanking(allocation: Allocation[]) {
     for (const projectAllocation of allocation) {
@@ -40,4 +34,13 @@ export function logAllocationRankingList(allocation: Allocation[]) {
         console.log(`  5 (${temp[5].length}): ${temp[5].join(", ")}`);
 
     }
+}
+
+/** Helper method to loop through and sum all the applicants in a set of allocations */
+export function countAllApplicants(allocations: Allocation[]): number {
+    let count = 0;
+    for (const allocation of allocations) {
+        count += allocation.applicants.length;
+    }
+    return count;
 }
