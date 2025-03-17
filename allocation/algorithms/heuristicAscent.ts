@@ -28,11 +28,7 @@ const {A, B, C, D, numAscents} = config.allocation;
  * @returns A list of allocations: { project, applicants[] }
  */
 export function randomHeuristicAscent(applicants: Applicant[], projects: Project[]): Allocation[] {
-  const runs: Allocation[][] = [];
-  for (let i = 0; i < numAscents; i++) {
-    runs.push(randomlyAllocate(projects, applicants));
-  }
-  return heuristicAscent(runs);
+  return heuristicAscent(() => randomlyAllocate(projects, applicants), numAscents);
 }
 
 /**
@@ -43,13 +39,13 @@ export function randomHeuristicAscent(applicants: Applicant[], projects: Project
  * @param projects A list of project preferences
  * @returns A list of allocations: { project, applicants[] }
  */
-export function heuristicAscent(runs: Allocation[][]): Allocation[] {
+export function heuristicAscent(generator: () => Allocation[], numAscents: number): Allocation[] {
   let highestUtility = 0;
   let bestAllocation: Allocation[] = [];
 
   // Repeat singleHeuristicAscent() numAscents times
-  for (let i = 0; i < runs.length; i++) {
-    const [allocation, utility] = singleHeuristicAscent(runs[i]);
+  for (let i = 0; i < numAscents; i++) {
+    const [allocation, utility] = singleHeuristicAscent(generator());
     console.log(`Found allocation of utility ${utility}`);
     if (utility > highestUtility) {
       console.log(`Keeping! (Previous best was ${highestUtility})`);
