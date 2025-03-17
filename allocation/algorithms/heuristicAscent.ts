@@ -28,7 +28,7 @@ const {A, B, C, D, numAscents} = config.allocation;
  * @returns A list of allocations: { project, applicants[] }
  */
 export function randomHeuristicAscent(applicants: Applicant[], projects: Project[]): Allocation[] {
-  return heuristicAscent(() => randomlyAllocate(projects, applicants), numAscents);
+  return heuristicAscent(() => randomlyAllocate(projects, applicants));
 }
 
 /**
@@ -39,7 +39,7 @@ export function randomHeuristicAscent(applicants: Applicant[], projects: Project
  * @param projects A list of project preferences
  * @returns A list of allocations: { project, applicants[] }
  */
-export function heuristicAscent(generator: () => Allocation[], numAscents: number): Allocation[] {
+export function heuristicAscent(generator: () => Allocation[]): Allocation[] {
   let highestUtility = 0;
   let bestAllocation: Allocation[] = [];
 

@@ -5,6 +5,7 @@ import { parseCsvProjects } from "../common/csvParser/parseCsvProjects.js";
 import { writeCsv } from "../common/csvParser/writeCsv.js";
 import { config } from "../config.js";
 import { randomHeuristicAscent } from "./algorithms/heuristicAscent.js";
+import { powerOfFriendship } from "./algorithms/powerOfFriendship.js";
 import { stableMatching } from "./algorithms/stableMatching.js";
 import { calculateTotalUtility } from "./helper/objective.js";
 import { logAllocationRankingList } from "./helper/utils.js";
@@ -22,7 +23,7 @@ const allocate = async () => {
     // Algorithm
     console.log("Parsed! Running allocation algorithm...");
     // const allocations = stableMatching(applicants, projectsData);
-    const allocations = randomHeuristicAscent(applicants, projectsData);
+    const allocations = powerOfFriendship(applicants, projectsData);
 
     logAllocationRankingList(allocations);
     const finalObjectiveScore = calculateTotalUtility(allocations, A, B, C, D);
