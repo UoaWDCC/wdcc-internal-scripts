@@ -19,10 +19,11 @@
       "dev": "tsc --watch",
       "lint": "eslint **/*.ts --fix",
       "lint:prettier": "prettier --write --config .prettierrc .",
-      "preprocess": "node dist/preprocess/index.js",
-      "allocate": "node dist/allocation/index.js",
+      "preprocess": "node dist/preprocess",
+      "allocate": "node dist/allocation",
       "p": "pnpm run preprocess",
-      "a": "pnpm run allocate"
+      "a": "pnpm run allocate",
+      "test": "node dist/allocation/test"
     },
     "volta": {
       "node": "22.14.0",

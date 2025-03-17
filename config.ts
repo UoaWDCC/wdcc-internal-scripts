@@ -6,7 +6,7 @@ export const config = {
         outFileFlagged: "./data/flaggedApplicants.csv",
     },
     allocation: {
-        inFileApplicants: "./data/processedApplicants.csv",
+        inFileApplicants: "./data/applicants.csv",
         inFileTeams: "./data/projectsData.csv",
         outFileFormat: "./data/out/applicants-<team>.csv",
         // Arbitrary constants to control objective function weighting

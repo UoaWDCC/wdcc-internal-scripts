@@ -37,9 +37,10 @@ export function calculateUtilityOfAllocation(allocation: Allocation): number {
     const beExpScore = beExpSum * project.backendDifficulty;
     const feExpScore = feExpSum * project.frontendDifficulty;
 
-    // TODO needs priority
+    // TODO needs priority and role preference
     const { A, B, C, D } = config.allocation;
 
+    return A * projectPrefScore;
     return A * projectPrefScore - B * rolePrefDeviation + C * beExpScore + D * feExpScore;
 }
 

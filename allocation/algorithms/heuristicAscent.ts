@@ -65,7 +65,6 @@ export function heuristicAscent(generator: () => Allocation[]): Allocation[] {
  * @returns 2-tuple: [set of final allocations, final utility]
  */
 function singleHeuristicAscent(startingAllocations: Allocation[]): [Allocation[], number] {
-
   // Set up Allocation utilities and initial total utility
   let totalUtility = 0;
   const allocations: AnnotatedAllocation[] = startingAllocations.map(allocation => {
