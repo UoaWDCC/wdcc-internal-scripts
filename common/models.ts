@@ -5,29 +5,29 @@ export type Applicant = {
   email: string;
   github: string;
   major: string;
-  rolePreference: string;
+  rolePreference: string; // out of 5
   skills: string[];
-  backendPreference: number;
-  frontendExperience: number;
-  backendExperience: number;
-  designExperience: number;
-  testingExperience: number; //not too important ?
-  projectChoices: string[]; //index 0 is highest preferences
+  backendPreference: number; // out of 5
+  frontendExperience: number; // out of 5
+  backendExperience: number; // out of 5
+  designExperience: number; // out of 5
+  testingExperience: number;  // out of 5, not too important?
+  projectChoices: string[]; // index 0 is highest preference
   passionBlurb: string; // not used
-  portfolioLink: string; //not used
-  additionalInfo: string; //not used
+  portfolioLink: string; // not used
+  additionalInfo: string; // not used
   execComments: string; // not used
-  creativityHire: string; // if
+  creativityHire: string; // filter out designers for separate pathway
   rizzLevel: number; // not used
 };
 
 export type Project = {
   id: number;
   name: string;
-  backendDifficulty: number;
-  frontendDifficulty: number;
-  backendWeighting: number
-  priority: number;
+  backendDifficulty: number; // out of 5
+  frontendDifficulty: number; // out of 5
+  backendWeighting: number; // out of 7 (???)
+  priority: number; // out of 5
 };
 
 export type Allocation = {
