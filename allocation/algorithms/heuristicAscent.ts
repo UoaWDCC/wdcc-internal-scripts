@@ -2,6 +2,7 @@ import { Allocation, Applicant, Project } from "../../common/models.js";
 import { config } from "../../config.js";
 import { calculateUtilityOfAllocation } from "../helper/objective.js";
 import { randomlyAllocate } from "../helper/random.js";
+import { countAllApplicants } from "../helper/utils.js";
 
 /** Just a regular allocation with a cached utility */
 type AnnotatedAllocation = Allocation & { utility: number };
@@ -19,21 +20,36 @@ type Swap = { alloc1: AnnotatedAllocation, i: number, alloc2: AnnotatedAllocatio
 const {A, B, C, D, numAscents} = config.allocation;
 
 /**
- * Uses next descent to find a good allocation of applicants to projects
+ * Uses next descent to find a good allocation of applicants to projects with random restarts
  * @see https://en.wikipedia.org/wiki/Local_search_(optimization)
  *
  * @param applicants A list of applicants
  * @param projects A list of project preferences
  * @returns A list of allocations: { project, applicants[] }
  */
-export function heuristicAscent(applicants: Applicant[], projects: Project[]): Allocation[] {
+export function randomHeuristicAscent(applicants: Applicant[], projects: Project[]): Allocation[] {
+  const runs: Allocation[][] = [];
+  for (let i = 0; i < numAscents; i++) {
+    runs.push(randomlyAllocate(projects, applicants));
+  }
+  return heuristicAscent(runs);
+}
+
+/**
+ * Uses next descent to find a good allocation of applicants to projects based on a provided starting set of allocations
+ * @see https://en.wikipedia.org/wiki/Local_search_(optimization)
+ *
+ * @param applicants A list of applicants
+ * @param projects A list of project preferences
+ * @returns A list of allocations: { project, applicants[] }
+ */
+export function heuristicAscent(runs: Allocation[][]): Allocation[] {
   let highestUtility = 0;
   let bestAllocation: Allocation[] = [];
 
   // Repeat singleHeuristicAscent() numAscents times
-  for (let i = 0; i < numAscents; i++) {
-    const randomAllocation = randomlyAllocate(projects, applicants);
-    const [allocation, utility] = singleHeuristicAscent(randomAllocation, applicants.length);
+  for (let i = 0; i < runs.length; i++) {
+    const [allocation, utility] = singleHeuristicAscent(runs[i]);
     console.log(`Found allocation of utility ${utility}`);
     if (utility > highestUtility) {
       console.log(`Keeping! (Previous best was ${highestUtility})`);
@@ -52,7 +68,7 @@ export function heuristicAscent(applicants: Applicant[], projects: Project[]): A
  * @param projects
  * @returns 2-tuple: [set of final allocations, final utility]
  */
-function singleHeuristicAscent(startingAllocations: Allocation[], numApplicants: number): [Allocation[], number] {
+function singleHeuristicAscent(startingAllocations: Allocation[]): [Allocation[], number] {
 
   // Set up Allocation utilities and initial total utility
   let totalUtility = 0;
@@ -66,7 +82,7 @@ function singleHeuristicAscent(startingAllocations: Allocation[], numApplicants:
   // Do ascent
   const swap = { alloc1Index: 0, i: 0, alloc2Index: 1, j: 0 };
   let numIgnoresInRow = 0;
-  const maxIgnoresInRow = getMaxIgnores(allocations.length, numApplicants);
+  const maxIgnoresInRow = getMaxIgnores(allocations.length, countAllApplicants(allocations));
   while (numIgnoresInRow < maxIgnoresInRow) {
     // Try swap
     const utilityChange = swapApplicants({
