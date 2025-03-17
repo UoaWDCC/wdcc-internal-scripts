@@ -2,7 +2,6 @@ import { Allocation, Applicant, Project } from "../../common/models.js";
 import { config } from "../../config.js";
 import { calculateUtilityOfAllocation } from "../helper/objective.js";
 import { randomlyAllocate } from "../helper/random.js";
-import { createAllocations } from "../helper/utils.js";
 
 /** Just a regular allocation with a cached utility */
 type AnnotatedAllocation = Allocation & { utility: number };
@@ -33,7 +32,8 @@ export function heuristicAscent(applicants: Applicant[], projects: Project[]): A
 
   // Repeat singleHeuristicAscent() numAscents times
   for (let i = 0; i < numAscents; i++) {
-    const [allocation, utility] = singleHeuristicAscent(applicants, projects);
+    const randomAllocation = randomlyAllocate(projects, applicants);
+    const [allocation, utility] = singleHeuristicAscent(randomAllocation, applicants.length);
     console.log(`Found allocation of utility ${utility}`);
     if (utility > highestUtility) {
       console.log(`Keeping! (Previous best was ${highestUtility})`);
@@ -52,13 +52,11 @@ export function heuristicAscent(applicants: Applicant[], projects: Project[]): A
  * @param projects
  * @returns 2-tuple: [set of final allocations, final utility]
  */
-function singleHeuristicAscent(applicants: Applicant[], projects: Project[]): [Allocation[], number] {
-  const rawAllocations = createAllocations(projects); // This allocation gets mutated
-  randomlyAllocate(rawAllocations, applicants);
+function singleHeuristicAscent(startingAllocations: Allocation[], numApplicants: number): [Allocation[], number] {
 
   // Set up Allocation utilities and initial total utility
   let totalUtility = 0;
-  const allocations: AnnotatedAllocation[] = rawAllocations.map(allocation => {
+  const allocations: AnnotatedAllocation[] = startingAllocations.map(allocation => {
     const utility = calculateUtilityOfAllocation(allocation, A, B, C, D);
     totalUtility += utility;
     return {...allocation, utility};
@@ -68,7 +66,7 @@ function singleHeuristicAscent(applicants: Applicant[], projects: Project[]): [A
   // Do ascent
   const swap = { alloc1Index: 0, i: 0, alloc2Index: 1, j: 0 };
   let numIgnoresInRow = 0;
-  const maxIgnoresInRow = getMaxIgnores(projects.length, applicants.length);
+  const maxIgnoresInRow = getMaxIgnores(allocations.length, numApplicants);
   while (numIgnoresInRow < maxIgnoresInRow) {
     // Try swap
     const utilityChange = swapApplicants({
@@ -90,12 +88,12 @@ function singleHeuristicAscent(applicants: Applicant[], projects: Project[]): [A
     // Move to next swap (try out all possible swaps)
     const alloc1Len = allocations[swap.alloc1Index].applicants.length;
     swap.i = (swap.i + 1) % alloc1Len;
-    if (swap.i === 0) swap.alloc1Index = swap.alloc1Index % projects.length;
+    if (swap.i === 0) swap.alloc1Index = swap.alloc1Index % allocations.length;
     if (swap.i === 0 && swap.alloc1Index === 0) {
       // Move second pointer only once first pointer has done a full applicantsPerProject * numProjects sweep
       const alloc2Len = allocations[swap.alloc2Index].applicants.length;
       swap.j = (swap.j + 1) % alloc2Len;
-      if (swap.j === 0) swap.alloc2Index = swap.alloc2Index % projects.length;
+      if (swap.j === 0) swap.alloc2Index = swap.alloc2Index % allocations.length;
     }
   }
 

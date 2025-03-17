@@ -1,10 +1,4 @@
-import { Allocation, Project } from "../../common/models.js";
-import { Applicant } from "../../common/models.js";
-
-/** Projects -> Allocations */
-export function createAllocations(projects: Project[]): Allocation[] {
-    return projects.map((project) => ({ project, applicants: [] }));
-}
+import { Allocation, Applicant } from "../../common/models.js";
 
 export function logAllocationRanking(allocation: Allocation[]) {
     for (const projectAllocation of allocation) {
