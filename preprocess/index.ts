@@ -39,6 +39,7 @@ const preProcess = async () => {
 
     console.log("Filtering applicants based on if they have a passionBlurb < 100 char ")
 
+    // TODO this filtering doesn't take into account rizzLevel properly
     const flaggedApplicants = applicants.filter(applicant => (applicant.passionBlurb && applicant.passionBlurb.length < 100) || applicant.rizzLevel === 1);
     applicants = applicants.filter(applicant => (applicant.passionBlurb && applicant.passionBlurb.length >= 100) || applicant.rizzLevel === 1);
 

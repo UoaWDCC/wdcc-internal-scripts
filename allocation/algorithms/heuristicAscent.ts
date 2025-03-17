@@ -17,8 +17,6 @@ type AnnotatedAllocation = Allocation & { utility: number };
  */
 type Swap = { alloc1: AnnotatedAllocation, i: number, alloc2: AnnotatedAllocation, j: number };
 
-const {A, B, C, D, numAscents} = config.allocation;
-
 /**
  * Uses next descent to find a good allocation of applicants to projects with random restarts
  * @see https://en.wikipedia.org/wiki/Local_search_(optimization)
@@ -44,6 +42,7 @@ export function heuristicAscent(generator: () => Allocation[]): Allocation[] {
   let bestAllocation: Allocation[] = [];
 
   // Repeat singleHeuristicAscent() numAscents times
+  const {numAscents} = config.allocation;
   for (let i = 0; i < numAscents; i++) {
     console.log(`BEGINNING RUN ${i}`);
     const [allocation, utility] = singleHeuristicAscent(generator());
@@ -70,7 +69,7 @@ function singleHeuristicAscent(startingAllocations: Allocation[]): [Allocation[]
   // Set up Allocation utilities and initial total utility
   let totalUtility = 0;
   const allocations: AnnotatedAllocation[] = startingAllocations.map(allocation => {
-    const utility = calculateUtilityOfAllocation(allocation, A, B, C, D);
+    const utility = calculateUtilityOfAllocation(allocation);
     totalUtility += utility;
     return {...allocation, utility};
   });
@@ -139,8 +138,8 @@ function swapApplicants(swap: Swap): number {
   // Swap
   [alloc1.applicants[i], alloc2.applicants[j]] = [alloc2.applicants[j], alloc1.applicants[i]];
 
-  const alloc1NewUtility = calculateUtilityOfAllocation(alloc1, A, B, C, D);
-  const alloc2NewUtility = calculateUtilityOfAllocation(alloc2, A, B, C, D);
+  const alloc1NewUtility = calculateUtilityOfAllocation(alloc1);
+  const alloc2NewUtility = calculateUtilityOfAllocation(alloc2);
   const netChangeInUtility = alloc1NewUtility + alloc2NewUtility - alloc1OldUtility - alloc2OldUtility;
 
   // Check if worth it

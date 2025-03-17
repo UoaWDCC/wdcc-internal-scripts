@@ -12,7 +12,7 @@ import { logAllocationRankingList } from "./helper/utils.js";
 
 const allocate = async () => {
     console.log("Running allocation script");
-    const { A, B, C, D, inFileApplicants, inFileTeams, outFileFormat } = config.allocation;
+    const { inFileApplicants, inFileTeams, outFileFormat } = config.allocation;
 
     // Input
     console.log("Parsing Applicants CSV...");
@@ -23,10 +23,10 @@ const allocate = async () => {
     // Algorithm
     console.log("Parsed! Running allocation algorithm...");
     // const allocations = stableMatching(applicants, projectsData);
-    const allocations = powerOfFriendship(applicants, projectsData);
+    const allocations = randomHeuristicAscent(applicants, projectsData);
 
     logAllocationRankingList(allocations);
-    const finalObjectiveScore = calculateTotalUtility(allocations, A, B, C, D);
+    const finalObjectiveScore = calculateTotalUtility(allocations);
     const utilityPerApplicant = (finalObjectiveScore / applicants.length).toFixed(2);
     console.log(`Allocated ${allocations.length} projects! Total utility: ${finalObjectiveScore}. Utility per applicant: ${utilityPerApplicant}`);
 

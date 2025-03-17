@@ -1,29 +1,20 @@
 import { Allocation, Applicant, Project } from "../../common/models.js";
+import { config } from "../../config.js";
 
 /**
  * Helper function to get total utility (happiness score) of a full set of project allocations.
  * This is the objective function.
- *
- * @param allocations A complete allocation of all members to projects
- * @param A Arbitrary constant to control weighting of project preference
- * @param B Arbitrary constant to control weighting of role (BE/FE) preference
- * @param C Arbitrary constant to control weighting of BE experience
- * @param D Arbitrary constant to control weighting of FE experience
  */
-export function calculateTotalUtility(allocations: Allocation[], A: number, B: number, C: number, D: number): number {
-    return allocations.map((allocation) => calculateUtilityOfAllocation(allocation, A, B, C, D)).reduce((sum, utility) => sum + utility);
+export function calculateTotalUtility(allocations: Allocation[]): number {
+    return allocations.map((allocation) => calculateUtilityOfAllocation(allocation)).reduce((sum, utility) => sum + utility);
 }
 
 /**
  * Get utility (happiness score) from a certain allocation.
  *
  * @param allocation An allocation of applicants to a single project
- * @param A Arbitrary constant to control weighting of project preference
- * @param B Arbitrary constant to control weighting of role (BE/FE) preference
- * @param C Arbitrary constant to control weighting of BE experience
- * @param D Arbitrary constant to control weighting of FE experience
  */
-export function calculateUtilityOfAllocation(allocation: Allocation, A: number, B: number, C: number, D: number): number {
+export function calculateUtilityOfAllocation(allocation: Allocation): number {
     const { project, applicants } = allocation;
 
     // I need these names to be short for my sanity sorry
@@ -45,6 +36,9 @@ export function calculateUtilityOfAllocation(allocation: Allocation, A: number, 
     // Experience level metrics
     const beExpScore = beExpSum * project.backendDifficulty;
     const feExpScore = feExpSum * project.frontendDifficulty;
+
+    // TODO needs priority
+    const { A, B, C, D } = config.allocation;
 
     return A * projectPrefScore - B * rolePrefDeviation + C * beExpScore + D * feExpScore;
 }

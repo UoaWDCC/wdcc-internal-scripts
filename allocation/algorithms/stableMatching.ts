@@ -90,7 +90,7 @@ export function stableMatching(
     }
 
     console.log("Leftover")
-    for (let app of leftOver) {
+    for (const app of leftOver) {
         const a = copyApplicant.find(a => a.id === app.id)
         if (!a) {
             console.log(`----${app.name} : ${app.projectChoices} `)
