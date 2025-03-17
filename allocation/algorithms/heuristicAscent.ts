@@ -45,6 +45,7 @@ export function heuristicAscent(generator: () => Allocation[]): Allocation[] {
 
   // Repeat singleHeuristicAscent() numAscents times
   for (let i = 0; i < numAscents; i++) {
+    console.log(`BEGINNING RUN ${i}`);
     const [allocation, utility] = singleHeuristicAscent(generator());
     console.log(`Found allocation of utility ${utility}`);
     if (utility > highestUtility) {
