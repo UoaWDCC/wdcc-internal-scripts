@@ -1,5 +1,5 @@
 import { Allocation } from "../../common/models.js";
-import { calculateUtilityOfAllocation } from "./objective.js";
+import { calculateTotalUtility, calculateUtilityOfAllocation } from "./objective.js";
 
 export function logAllocationRanking(allocation: Allocation[]) {
     for (const projectAllocation of allocation) {
@@ -11,7 +11,7 @@ export function logAllocationRanking(allocation: Allocation[]) {
     }
 }
 
-export function logAllocationRankingList(allocations: Allocation[]) {
+export function logAllocationRankingList(allocations: Allocation[], baselineAllocations: Allocation[]) {
     for (const projectAllocation of allocations) {
         console.log();
         console.log(`PROJECT ${projectAllocation.project.name} (count: ${projectAllocation.applicants.length})`);
@@ -34,8 +34,21 @@ export function logAllocationRankingList(allocations: Allocation[]) {
         console.log(`  4  (${temp[4].length}): ${temp[4].join(", ")}`);
         console.log(`  5  (${temp[5].length}): ${temp[5].join(", ")}`);
         console.log(`  6+ (${temp[0].length}): ${temp[0].join(", ")}`);
-
     }
+
+    // Final Output
+    const numApplicants = countAllApplicants(allocations);
+    const finalObjectiveScore = calculateTotalUtility(allocations);
+    const utilityPerApplicant = (finalObjectiveScore / numApplicants).toFixed(2);
+    console.log();
+    console.log(`Allocated ${numApplicants} applicants to ${allocations.length} projects! Total utility: ${finalObjectiveScore}. Utility per applicant: ${utilityPerApplicant}`);
+
+    // Baseline
+    const baselineNumApplicants = countAllApplicants(baselineAllocations);
+    const baselineObjectiveScore = calculateTotalUtility(baselineAllocations);
+    const baselineUtilityPerApplicant = (baselineObjectiveScore / baselineNumApplicants).toFixed(2);
+    console.log(`                    [RANDOM BASELINE]  Total utility: ${baselineObjectiveScore}. Utility per applicant: ${baselineUtilityPerApplicant}`);
+    console.log();
 }
 
 /** Helper method to loop through and sum all the applicants in a set of allocations */

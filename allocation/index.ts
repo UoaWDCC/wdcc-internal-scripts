@@ -7,7 +7,7 @@ import { config } from "../config.js";
 import { randomHeuristicAscent } from "./algorithms/heuristicAscent.js";
 import { powerOfFriendship } from "./algorithms/powerOfFriendship.js";
 import { stableMatching } from "./algorithms/stableMatching.js";
-import { calculateTotalUtility } from "./helper/objective.js";
+import { randomlyAllocate } from "./helper/random.js";
 import { logAllocationRankingList } from "./helper/utils.js";
 
 const allocate = async () => {
@@ -24,11 +24,10 @@ const allocate = async () => {
     console.log("Parsed! Running allocation algorithm...");
     // const allocations = stableMatching(applicants, projectsData);
     const allocations = randomHeuristicAscent(applicants, projectsData);
+    // const allocations = powerOfFriendship(applicants, projectsData);
 
-    logAllocationRankingList(allocations);
-    const finalObjectiveScore = calculateTotalUtility(allocations);
-    const utilityPerApplicant = (finalObjectiveScore / applicants.length).toFixed(2);
-    console.log(`Allocated ${allocations.length} projects! Total utility: ${finalObjectiveScore}. Utility per applicant: ${utilityPerApplicant}`);
+    const randomAllocations = randomlyAllocate(projectsData, applicants);
+    logAllocationRankingList(allocations, randomAllocations);
 
     // Output
     console.log(`Writing to CSVs...`);
