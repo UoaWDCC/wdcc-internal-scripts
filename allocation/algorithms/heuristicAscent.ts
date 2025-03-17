@@ -37,12 +37,11 @@ export function randomHeuristicAscent(applicants: Applicant[], projects: Project
  * @param projects A list of project preferences
  * @returns A list of allocations: { project, applicants[] }
  */
-export function heuristicAscent(generator: () => Allocation[]): Allocation[] {
+export function heuristicAscent(generator: () => Allocation[], numAscents: number = config.allocation.numAscents): Allocation[] {
   let highestUtility = 0;
   let bestAllocation: Allocation[] = [];
 
   // Repeat singleHeuristicAscent() numAscents times
-  const {numAscents} = config.allocation;
   for (let i = 0; i < numAscents; i++) {
     console.log(`BEGINNING RUN ${i}`);
     const [allocation, utility] = singleHeuristicAscent(generator());
@@ -86,7 +85,7 @@ function singleHeuristicAscent(startingAllocations: Allocation[]): [Allocation[]
       alloc2: allocations[swap.alloc2Index]
     });
 
-    // console.log(`******************************** ${numIgnoresInRow}/${maxIgnoresInRow}: ${utilityChange}`)
+    // console.log(`******************************** ${numIgnoresInRow}/${maxIgnoresInRow}: ${utilityChange}`);
 
     // Check and update bookkeeping
     if (utilityChange === 0) {
@@ -99,12 +98,12 @@ function singleHeuristicAscent(startingAllocations: Allocation[]): [Allocation[]
     // Move to next swap (try out all possible swaps)
     const alloc1Len = allocations[swap.alloc1Index].applicants.length;
     swap.i = (swap.i + 1) % alloc1Len;
-    if (swap.i === 0) swap.alloc1Index = swap.alloc1Index % allocations.length;
+    if (swap.i === 0) swap.alloc1Index = (swap.alloc1Index + 1) % allocations.length;
     if (swap.i === 0 && swap.alloc1Index === 0) {
       // Move second pointer only once first pointer has done a full applicantsPerProject * numProjects sweep
       const alloc2Len = allocations[swap.alloc2Index].applicants.length;
       swap.j = (swap.j + 1) % alloc2Len;
-      if (swap.j === 0) swap.alloc2Index = swap.alloc2Index % allocations.length;
+      if (swap.j === 0) swap.alloc2Index = (swap.alloc2Index + 1) % allocations.length;
     }
   }
 
@@ -133,6 +132,8 @@ function swapApplicants(swap: Swap): number {
   const  { alloc1, i, alloc2, j } = swap;
   const alloc1OldUtility = alloc1.utility;
   const alloc2OldUtility = alloc2.utility;
+
+  // console.log(`******************************** Trying ${alloc1.project.name}[${i}] <-> ${alloc2.project.name}[${j}]`);
 
   // Swap
   [alloc1.applicants[i], alloc2.applicants[j]] = [alloc2.applicants[j], alloc1.applicants[i]];
