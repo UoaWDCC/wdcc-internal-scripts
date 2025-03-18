@@ -22,8 +22,8 @@ const allocate = async () => {
 
     // Algorithm
     console.log("Parsed! Running allocation algorithm...");
-    // const allocations = stableMatching(applicants, projectsData);
-    const allocations = randomHeuristicAscent(applicants, projectsData);
+    const allocations = stableMatching(applicants, projectsData);
+    // const allocations = randomHeuristicAscent(applicants, projectsData);
     // const allocations = powerOfFriendship(applicants, projectsData);
 
     const randomAllocations = randomlyAllocate(projectsData, applicants);
