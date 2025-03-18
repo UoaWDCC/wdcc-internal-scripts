@@ -1,6 +1,8 @@
 import { Allocation, Applicant, Project } from "../../common/models.js";
 import { config } from "../../config.js";
 
+const { A, B, C, D, E, F } = config.allocation;
+
 /**
  * Helper function to get total utility (happiness score) of a full set of project allocations.
  * This is the objective function.
@@ -40,7 +42,6 @@ export function calculateUtilityOfAllocation(allocation: Allocation, log: boolea
     const feExpScore = feExpSum * project.frontendDifficulty;
 
     // Priority & objective score
-    const { A, B, C, D, E } = config.allocation;
     const priorityExpMultiplier = 1 + E * project.priority;
     const objectiveScore = A * projectPrefScore + B * rolePrefScore + priorityExpMultiplier * (C * beExpScore + D * feExpScore);
 
@@ -50,7 +51,7 @@ export function calculateUtilityOfAllocation(allocation: Allocation, log: boolea
         console.log(`  Role pref: ${rolePrefScore.toFixed(2)}/${n*5}    (target: ${targetBePrefSum} sum: ${bePrefSum})`);
         console.log(`  BE exp:    ${beExpScore.toFixed(2)}/${n*25}    (${beExpSum} * ${project.backendDifficulty})`);
         console.log(`  FE exp:    ${feExpScore.toFixed(2)}/${n*25}    (${feExpSum} * ${project.frontendDifficulty})`);
-        console.log(`  Objective: ${objectiveScore.toFixed(2)}      (${A} * ${projectPrefScore} + ${B} * ${rolePrefScore} + ${C} * ${beExpScore} + ${D} * ${feExpScore})`);
+        console.log(`  Objective: ${objectiveScore.toFixed(2)}       ${A} * ${projectPrefScore} + ${B} * ${rolePrefScore} + ${priorityExpMultiplier}(${C} * ${beExpScore} + ${D} * ${feExpScore})`);
 
         // Sanity check just to ensure there are people who COULD do each role in each team (will be duplicates)
         let numFrontend = 0;
@@ -69,6 +70,12 @@ export function calculateUtilityOfAllocation(allocation: Allocation, log: boolea
 
 /** 5 for first choice, 4 for second choice ... 0 for not chosen */
 function getApplicantUtilityFromProject(applicant: Applicant, project: Project): number {
+    // Special requests
+    if (applicant.requestedProject === project.name) {
+        return F;
+    }
+
+    // Choice rankings
     for (const [i, choice] of applicant.projectChoices.entries()) {
         if (choice === project.name) {
             return 5 - i;

@@ -19,6 +19,7 @@ export type Applicant = {
   execComments: string; // not used
   creativityHire: string; // filter out designers for separate pathway
   rizzLevel: number; // not used
+  requestedProject: string; // If the applicant specifically requested a project, give them priority
 };
 
 export type Project = {

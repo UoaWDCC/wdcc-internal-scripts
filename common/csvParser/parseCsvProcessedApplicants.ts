@@ -1,10 +1,7 @@
 
-import { Applicant } from "../models.js";
 import fs from "fs";
 import Papa from "papaparse";
-
-
-
+import { Applicant } from "../models.js";
 
 export const parseProcessedCsvApplicants = (filePath: string): Promise<Applicant[]> => {
   return new Promise((resolve, reject) => {
@@ -30,12 +27,13 @@ export const parseProcessedCsvApplicants = (filePath: string): Promise<Applicant
             designExperience: parseInt(row["designExperience"], 10),
             testingExperience: parseInt(row["testingExperience"], 10),
             projectChoices: row["projectChoices"]?.split(",").map((choice: string) => choice.trim()) || [], // Split projectChoices string into array
-            passionBlurb: row["passionBlurb"] || "", 
+            passionBlurb: row["passionBlurb"] || "",
             portfolioLink: row["portfolioLink"] || "",
-            additionalInfo: row["additionalInfo"] || "", 
-            execComments: row["execComments"] || "", 
-            rizzLevel: parseInt(row["rizzLevel"], 10) || 0, 
-            creativityHire: row["creativityHire"]
+            additionalInfo: row["additionalInfo"] || "",
+            execComments: row["execComments"] || "",
+            rizzLevel: parseInt(row["rizzLevel"], 10) || 0,
+            creativityHire: row["creativityHire"],
+            requestedProject: row["requestedProject"],
           }));
 
           resolve(applicants);

@@ -32,7 +32,8 @@ function testCalculateUtilityOfAllocation() {
         additionalInfo: "",
         execComments: "",
         creativityHire: "",
-        rizzLevel: 0
+        rizzLevel: 0,
+        requestedProject: ""
       },
       {
         timestamp: new Date(),
@@ -54,7 +55,8 @@ function testCalculateUtilityOfAllocation() {
         additionalInfo: "",
         execComments: "",
         creativityHire: "",
-        rizzLevel: 0
+        rizzLevel: 0,
+        requestedProject: ""
       },
       {
         timestamp: new Date(),
@@ -76,7 +78,8 @@ function testCalculateUtilityOfAllocation() {
         additionalInfo: "",
         execComments: "",
         creativityHire: "",
-        rizzLevel: 0
+        rizzLevel: 0,
+        requestedProject: ""
       }
     ]
   }
