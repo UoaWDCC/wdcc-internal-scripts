@@ -41,7 +41,7 @@ const preProcess = async () => {
 
     // TODO this filtering doesn't take into account rizzLevel properly
     const flaggedApplicants = applicants.filter(applicant => (applicant.passionBlurb && applicant.passionBlurb.length < 100) || applicant.rizzLevel === 1);
-    applicants = applicants.filter(applicant => (applicant.passionBlurb && applicant.passionBlurb.length >= 100) || applicant.rizzLevel === 1);
+    applicants = applicants.filter(applicant => !((applicant.passionBlurb && applicant.passionBlurb.length < 100) || applicant.rizzLevel === 1));
 
     console.log("Filtering applicants based on if they're a designer")
     applicants = applicants.filter(applicant => !designers.includes(applicant));
