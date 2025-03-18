@@ -77,7 +77,6 @@ export function stableMatching(
             }
         }
     }
-    console.log(`length of leftover:  ${leftOver.length}`)
     // change format to Allocation[]
     const arr: Allocation[] = Array.from(allocationResult.values()).map(projectAllocation => ({
         project: projectAllocation.project,
@@ -89,7 +88,17 @@ export function stableMatching(
         al.applicants = al.applicants.map(applicant => copyApplicant.find(a => a.id === applicant.id)!)
     }
 
-    console.log("Leftover")
+    for (const tempAllocation of arr) {
+        while (tempAllocation.applicants.length < projectTeamSize) {
+            const app = leftOver.shift();
+            if (!app) {
+                break;
+            }
+            tempAllocation.applicants.push(app)
+        }
+    }
+
+    console.log(`length of leftover:  ${leftOver.length}`)
     for (const app of leftOver) {
         const a = copyApplicant.find(a => a.id === app.id)
         if (!a) {
