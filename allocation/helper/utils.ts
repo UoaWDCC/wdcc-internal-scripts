@@ -41,13 +41,13 @@ export function logAllocationRankingList(allocations: Allocation[], baselineAllo
     const finalObjectiveScore = calculateTotalUtility(allocations);
     const utilityPerApplicant = (finalObjectiveScore / numApplicants).toFixed(2);
     console.log();
-    console.log(`Allocated ${numApplicants} applicants to ${allocations.length} projects! Total utility: ${finalObjectiveScore}. Utility per applicant: ${utilityPerApplicant}`);
+    console.log(`Allocated ${numApplicants} applicants to ${allocations.length} projects! Total utility: ${finalObjectiveScore.toFixed(2)}. Utility per applicant: ${utilityPerApplicant}`);
 
     // Baseline
     const baselineNumApplicants = countAllApplicants(baselineAllocations);
     const baselineObjectiveScore = calculateTotalUtility(baselineAllocations);
     const baselineUtilityPerApplicant = (baselineObjectiveScore / baselineNumApplicants).toFixed(2);
-    console.log(`                    [RANDOM BASELINE]  Total utility: ${baselineObjectiveScore}. Utility per applicant: ${baselineUtilityPerApplicant}`);
+    console.log(`                    [RANDOM BASELINE]  Total utility: ${baselineObjectiveScore.toFixed(2)}. Utility per applicant: ${baselineUtilityPerApplicant}`);
     console.log();
 }
 

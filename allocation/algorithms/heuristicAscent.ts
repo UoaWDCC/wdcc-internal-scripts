@@ -88,7 +88,7 @@ function singleHeuristicAscent(startingAllocations: Allocation[]): [Allocation[]
     // console.log(`******************************** ${numIgnoresInRow}/${maxIgnoresInRow}: ${utilityChange}`);
 
     // Check and update bookkeeping
-    if (utilityChange === 0) {
+    if (utilityChange < 1e-12) { // Cause JS rounding 😒
       numIgnoresInRow++;
     } else {
       numIgnoresInRow = 0;
