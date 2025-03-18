@@ -43,7 +43,8 @@ export const parseRawCsvApplicants = (filePath: string): Promise<Applicant[]> =>
             additionalInfo: row["Anything else you would like us to know?"] || "",
             execComments: row["EXEC INITIAL COMMENTS"] || "",
             rizzLevel: parseInt(row["EXEC RATING (0 to 5)"], 10) || 0,
-            creativityHire: row["CREATIVITY HIRE (manual Design/Design-dev allocation)"]
+            creativityHire: row["CREATIVITY HIRE (manual Design/Design-dev allocation)"],
+            requestedProject: row["REQUESTED PROJECT (please copy and paste the project name EXACTLY)"],
           }));
 
           resolve(applicants);

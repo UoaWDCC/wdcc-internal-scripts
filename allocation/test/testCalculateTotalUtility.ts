@@ -32,7 +32,8 @@ function testCalculateTotalUtility() {
         additionalInfo: "",
         execComments: "",
         creativityHire: "",
-        rizzLevel: 0
+        rizzLevel: 0,
+        requestedProject: ""
       },
       {
         timestamp: new Date(),
@@ -54,7 +55,8 @@ function testCalculateTotalUtility() {
         additionalInfo: "",
         execComments: "",
         creativityHire: "",
-        rizzLevel: 0
+        rizzLevel: 0,
+        requestedProject: ""
       },
       {
         timestamp: new Date(),
@@ -76,7 +78,8 @@ function testCalculateTotalUtility() {
         additionalInfo: "",
         execComments: "",
         creativityHire: "",
-        rizzLevel: 0
+        rizzLevel: 0,
+        requestedProject: ""
       }
     ]
   },
@@ -110,7 +113,8 @@ function testCalculateTotalUtility() {
         additionalInfo: "",
         execComments: "",
         creativityHire: "",
-        rizzLevel: 0
+        rizzLevel: 0,
+        requestedProject: ""
       },
       {
         timestamp: new Date(),
@@ -132,7 +136,8 @@ function testCalculateTotalUtility() {
         additionalInfo: "",
         execComments: "",
         creativityHire: "",
-        rizzLevel: 0
+        rizzLevel: 0,
+        requestedProject: ""
       },
       {
         timestamp: new Date(),
@@ -154,7 +159,8 @@ function testCalculateTotalUtility() {
         additionalInfo: "",
         execComments: "",
         creativityHire: "",
-        rizzLevel: 0
+        rizzLevel: 0,
+        requestedProject: ""
       }
     ]
   }

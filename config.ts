@@ -11,9 +11,11 @@ export const config = {
         outFileFormat: "./data/out/applicants-<team>.csv",
         // Arbitrary constants to control objective function weighting
         A: 1, // project preference
-        B: 1, // role (BE/FE) preference
+        B: 0.5, // role (BE/FE) preference
         C: 1.1, // BE experience
         D: 1.1, // FE experience
+        E: 0.1, // Priority
+        F: 20, // Project requests
         numAscents: 5,
     },
 };
