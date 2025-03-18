@@ -27,7 +27,7 @@ export type Project = {
   backendDifficulty: number; // out of 5
   frontendDifficulty: number; // out of 5
   backendWeighting: number; // out of 7 (???)
-  priority: number; // out of 5
+  priority: number; // 0 is no change, I expect values in range [-2, 2]
 };
 
 export type Allocation = {
