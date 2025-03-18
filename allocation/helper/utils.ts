@@ -33,7 +33,7 @@ export function logAllocationRankingList(allocations: Allocation[], baselineAllo
         console.log(`  3  (${temp[3].length}): ${temp[3].join(", ")}`);
         console.log(`  4  (${temp[4].length}): ${temp[4].join(", ")}`);
         console.log(`  5  (${temp[5].length}): ${temp[5].join(", ")}`);
-        console.log(`  6+ (${temp[0].length}): ${temp[0].join(", ")}`);
+        console.log(`  -1 (${temp[0].length}): ${temp[0].join(", ")}`);
     }
 
     // Final Output
