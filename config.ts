@@ -12,8 +12,8 @@ export const config = {
         // Arbitrary constants to control objective function weighting
         A: 1, // project preference
         B: 1, // role (BE/FE) preference
-        C: 1, // BE experience
-        D: 1, // FE experience
+        C: 1.1, // BE experience
+        D: 1.1, // FE experience
         numAscents: 5,
     },
 };

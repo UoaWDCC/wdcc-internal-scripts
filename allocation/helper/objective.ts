@@ -31,25 +31,25 @@ export function calculateUtilityOfAllocation(allocation: Allocation, log: boolea
     }
 
     // Overall ROLE (FE/BE) dissatisfaction metric
-    const targetBePrefSum = n * project.backendWeighting * 5/7; // project.backendWeighting out of 7 for some reason
-    const rolePrefDeviation = Math.abs(bePrefSum - targetBePrefSum) * 5/4; // Max deviation is 4 pp
+    const targetBePrefSum = n * project.backendWeighting; // project.backendWeighting out of 7 for some reason
+    const rolePrefDeviation = Math.abs(bePrefSum - targetBePrefSum);
+    const rolePrefScore = n*5 - rolePrefDeviation;
 
     // Experience level metrics
-    const beExpScore = beExpSum * project.backendDifficulty / 5;
-    const feExpScore = feExpSum * project.frontendDifficulty / 5;
+    const beExpScore = beExpSum * project.backendDifficulty;
+    const feExpScore = feExpSum * project.frontendDifficulty;
 
     // TODO needs priority and role preference
     const { A, B, C, D } = config.allocation;
-    const objectiveScore = A * projectPrefScore;
-    // const objectiveScore = A * projectPrefScore - B * rolePrefDeviation + C * beExpScore + D * feExpScore;
+    const objectiveScore = A * projectPrefScore + B * rolePrefScore + C * beExpScore + D * feExpScore;
 
     // Logging (bit of a hack...)
     if (log) {
         console.log(`  Proj pref: ${projectPrefScore.toFixed(2)}/${n*5}`);
-        console.log(`  Role pref: ${(n*5 - rolePrefDeviation).toFixed(2)}/${n*5}`);
-        console.log(`  BE exp:    ${beExpScore.toFixed(2)}/${n*5}`);
-        console.log(`  FE exp:    ${feExpScore.toFixed(2)}/${n*5}`);
-        console.log(`  Objective: ${objectiveScore.toFixed(2)}`);
+        console.log(`  Role pref: ${rolePrefScore.toFixed(2)}/${n*5}    (target: ${targetBePrefSum} sum: ${bePrefSum})`);
+        console.log(`  BE exp:    ${beExpScore.toFixed(2)}/${n*25}    (${beExpSum} * ${project.backendDifficulty})`);
+        console.log(`  FE exp:    ${feExpScore.toFixed(2)}/${n*25}    (${feExpSum} * ${project.frontendDifficulty})`);
+        console.log(`  Objective: ${objectiveScore.toFixed(2)}      (${A} * ${projectPrefScore} + ${B} * ${rolePrefScore} + ${C} * ${beExpScore} + ${D} * ${feExpScore})`);
     }
 
     return objectiveScore;
