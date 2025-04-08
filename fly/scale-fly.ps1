@@ -11,7 +11,7 @@ function Invoke-Scale-All-Fly-Apps-To-One {
         $AppName = $AppNameRaw.Trim()
 
         # List of forbidden app names
-        $ForbiddenApps = @("wdcc-website-v4", "uabc-prod-db")
+        $ForbiddenApps = @("wdcc-website-v4", "wdccxsesahackathon-com", "wdcc-uasc-api", "uabc-prod-db", "wdcc-uabc")
 
         # Exit early if $AppName is empty
         if (-not $AppName) {
@@ -33,5 +33,5 @@ function Invoke-Scale-All-Fly-Apps-To-One {
 }
 
 # ⚠️ Warning: This script is semi-dangerous to run. Make sure you're on the right account (fly whoami) and have checked with Nate!
-# fly apps list --quiet | Invoke-Scale-All-Fly-Apps-To-One
+fly apps list --quiet | Invoke-Scale-All-Fly-Apps-To-One
 # Invoke-Scale-All-Fly-Apps-To-One wdcc-website-v4-staging

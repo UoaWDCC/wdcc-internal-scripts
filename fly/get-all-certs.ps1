@@ -1,0 +1,1 @@
+fly apps list --quiet | ForEach-Object { Write-Output $_ && fly certs list -a $_.Trim() }
