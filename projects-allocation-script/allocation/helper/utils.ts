@@ -6,7 +6,9 @@ export function logAllocationRanking(allocation: Allocation[]) {
         console.log(projectAllocation.project.name);
         console.log(projectAllocation.applicants.length);
         for (const applicant of projectAllocation.applicants) {
-            console.log(`  ${applicant.name} - ${applicant.projectChoices.indexOf(projectAllocation.project.name) + 1}`);
+            console.log(
+                `  ${applicant.name} - ${applicant.projectChoices.indexOf(projectAllocation.project.name) + 1}`
+            );
         }
     }
 }
@@ -23,9 +25,9 @@ export function logAllocationRankingList(allocations: Allocation[], baselineAllo
             3: [],
             4: [],
             5: [],
-        }
+        };
         for (const applicant of projectAllocation.applicants) {
-            temp[applicant.projectChoices.indexOf(projectAllocation.project.name) + 1].push(applicant.name)
+            temp[applicant.projectChoices.indexOf(projectAllocation.project.name) + 1].push(applicant.name);
         }
 
         console.log(`  1  (${temp[1].length}): ${temp[1].join(", ")}`);
@@ -41,13 +43,17 @@ export function logAllocationRankingList(allocations: Allocation[], baselineAllo
     const finalObjectiveScore = calculateTotalUtility(allocations);
     const utilityPerApplicant = (finalObjectiveScore / numApplicants).toFixed(2);
     console.log();
-    console.log(`Allocated ${numApplicants} applicants to ${allocations.length} projects! Total utility: ${finalObjectiveScore.toFixed(2)}. Utility per applicant: ${utilityPerApplicant}`);
+    console.log(
+        `Allocated ${numApplicants} applicants to ${allocations.length} projects! Total utility: ${finalObjectiveScore.toFixed(2)}. Utility per applicant: ${utilityPerApplicant}`
+    );
 
     // Baseline
     const baselineNumApplicants = countAllApplicants(baselineAllocations);
     const baselineObjectiveScore = calculateTotalUtility(baselineAllocations);
     const baselineUtilityPerApplicant = (baselineObjectiveScore / baselineNumApplicants).toFixed(2);
-    console.log(`                    [RANDOM BASELINE]  Total utility: ${baselineObjectiveScore.toFixed(2)}. Utility per applicant: ${baselineUtilityPerApplicant}`);
+    console.log(
+        `                    [RANDOM BASELINE]  Total utility: ${baselineObjectiveScore.toFixed(2)}. Utility per applicant: ${baselineUtilityPerApplicant}`
+    );
     console.log();
 }
 

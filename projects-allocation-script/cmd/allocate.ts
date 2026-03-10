@@ -1,14 +1,11 @@
 // --- This file mainly for I/O ---
-
+import { powerOfFriendship } from "../allocation/algorithms/powerOfFriendship.js";
+import { randomlyAllocate } from "../allocation/helper/random.js";
+import { logAllocationRankingList } from "../allocation/helper/utils.js";
 import { parseProcessedCsvApplicants } from "../common/csvParser/parseCsvProcessedApplicants.js";
 import { parseCsvProjects } from "../common/csvParser/parseCsvProjects.js";
 import { writeCsv } from "../common/csvParser/writeCsv.js";
 import { config } from "../config.js";
-import { randomHeuristicAscent } from "./algorithms/heuristicAscent.js";
-import { powerOfFriendship } from "./algorithms/powerOfFriendship.js";
-import { stableMatching } from "./algorithms/stableMatching.js";
-import { randomlyAllocate } from "./helper/random.js";
-import { logAllocationRankingList } from "./helper/utils.js";
 
 const allocate = async () => {
     console.log("Running allocation script");

@@ -15,7 +15,7 @@ type AnnotatedAllocation = Allocation & { utility: number };
  * @param alloc2 Allocation second applicant belongs to
  * @param j Index of second applicant in alloc2.applicants
  */
-type Swap = { alloc1: AnnotatedAllocation, i: number, alloc2: AnnotatedAllocation, j: number };
+type Swap = { alloc1: AnnotatedAllocation; i: number; alloc2: AnnotatedAllocation; j: number };
 
 /**
  * Uses next descent to find a good allocation of applicants to projects with random restarts
@@ -26,7 +26,7 @@ type Swap = { alloc1: AnnotatedAllocation, i: number, alloc2: AnnotatedAllocatio
  * @returns A list of allocations: { project, applicants[] }
  */
 export function randomHeuristicAscent(applicants: Applicant[], projects: Project[]): Allocation[] {
-  return heuristicAscent(() => randomlyAllocate(projects, applicants));
+    return heuristicAscent(() => randomlyAllocate(projects, applicants));
 }
 
 /**
@@ -37,23 +37,26 @@ export function randomHeuristicAscent(applicants: Applicant[], projects: Project
  * @param projects A list of project preferences
  * @returns A list of allocations: { project, applicants[] }
  */
-export function heuristicAscent(generator: () => Allocation[], numAscents: number = config.allocation.numAscents): Allocation[] {
-  let highestUtility = 0;
-  let bestAllocation: Allocation[] = [];
+export function heuristicAscent(
+    generator: () => Allocation[],
+    numAscents: number = config.allocation.numAscents
+): Allocation[] {
+    let highestUtility = 0;
+    let bestAllocation: Allocation[] = [];
 
-  // Repeat singleHeuristicAscent() numAscents times
-  for (let i = 0; i < numAscents; i++) {
-    console.log(`BEGINNING RUN ${i}`);
-    const [allocation, utility] = singleHeuristicAscent(generator());
-    console.log(`Found allocation of utility ${utility}`);
-    if (utility > highestUtility) {
-      console.log(`Keeping! (Previous best was ${highestUtility})`);
-      highestUtility = utility;
-      bestAllocation = allocation;
+    // Repeat singleHeuristicAscent() numAscents times
+    for (let i = 0; i < numAscents; i++) {
+        console.log(`BEGINNING RUN ${i}`);
+        const [allocation, utility] = singleHeuristicAscent(generator());
+        console.log(`Found allocation of utility ${utility}`);
+        if (utility > highestUtility) {
+            console.log(`Keeping! (Previous best was ${highestUtility})`);
+            highestUtility = utility;
+            bestAllocation = allocation;
+        }
     }
-  }
 
-  return bestAllocation;
+    return bestAllocation;
 }
 
 /**
@@ -64,50 +67,51 @@ export function heuristicAscent(generator: () => Allocation[], numAscents: numbe
  * @returns 2-tuple: [set of final allocations, final utility]
  */
 function singleHeuristicAscent(startingAllocations: Allocation[]): [Allocation[], number] {
-  // Set up Allocation utilities and initial total utility
-  let totalUtility = 0;
-  const allocations: AnnotatedAllocation[] = startingAllocations.map(allocation => {
-    const utility = calculateUtilityOfAllocation(allocation);
-    totalUtility += utility;
-    return {...allocation, utility};
-  });
-  console.log(`Beginning ascent with starting utility of ${totalUtility}.`)
-
-  // Do ascent
-  const swap = { alloc1Index: 0, i: 0, alloc2Index: 1, j: 0 };
-  let numIgnoresInRow = 0;
-  const maxIgnoresInRow = getMaxIgnores(allocations.length, countAllApplicants(allocations));
-  while (numIgnoresInRow < maxIgnoresInRow) {
-    // Try swap
-    const utilityChange = swapApplicants({
-      ...swap,
-      alloc1: allocations[swap.alloc1Index],
-      alloc2: allocations[swap.alloc2Index]
+    // Set up Allocation utilities and initial total utility
+    let totalUtility = 0;
+    const allocations: AnnotatedAllocation[] = startingAllocations.map((allocation) => {
+        const utility = calculateUtilityOfAllocation(allocation);
+        totalUtility += utility;
+        return { ...allocation, utility };
     });
+    console.log(`Beginning ascent with starting utility of ${totalUtility}.`);
 
-    // console.log(`******************************** ${numIgnoresInRow}/${maxIgnoresInRow}: ${utilityChange}`);
+    // Do ascent
+    const swap = { alloc1Index: 0, i: 0, alloc2Index: 1, j: 0 };
+    let numIgnoresInRow = 0;
+    const maxIgnoresInRow = getMaxIgnores(allocations.length, countAllApplicants(allocations));
+    while (numIgnoresInRow < maxIgnoresInRow) {
+        // Try swap
+        const utilityChange = swapApplicants({
+            ...swap,
+            alloc1: allocations[swap.alloc1Index],
+            alloc2: allocations[swap.alloc2Index],
+        });
 
-    // Check and update bookkeeping
-    if (utilityChange < 1e-12) { // Cause JS rounding 😒
-      numIgnoresInRow++;
-    } else {
-      numIgnoresInRow = 0;
-      totalUtility += utilityChange;
+        // console.log(`******************************** ${numIgnoresInRow}/${maxIgnoresInRow}: ${utilityChange}`);
+
+        // Check and update bookkeeping
+        if (utilityChange < 1e-12) {
+            // Cause JS rounding 😒
+            numIgnoresInRow++;
+        } else {
+            numIgnoresInRow = 0;
+            totalUtility += utilityChange;
+        }
+
+        // Move to next swap (try out all possible swaps)
+        const alloc1Len = allocations[swap.alloc1Index].applicants.length;
+        swap.i = (swap.i + 1) % alloc1Len;
+        if (swap.i === 0) swap.alloc1Index = (swap.alloc1Index + 1) % allocations.length;
+        if (swap.i === 0 && swap.alloc1Index === 0) {
+            // Move second pointer only once first pointer has done a full applicantsPerProject * numProjects sweep
+            const alloc2Len = allocations[swap.alloc2Index].applicants.length;
+            swap.j = (swap.j + 1) % alloc2Len;
+            if (swap.j === 0) swap.alloc2Index = (swap.alloc2Index + 1) % allocations.length;
+        }
     }
 
-    // Move to next swap (try out all possible swaps)
-    const alloc1Len = allocations[swap.alloc1Index].applicants.length;
-    swap.i = (swap.i + 1) % alloc1Len;
-    if (swap.i === 0) swap.alloc1Index = (swap.alloc1Index + 1) % allocations.length;
-    if (swap.i === 0 && swap.alloc1Index === 0) {
-      // Move second pointer only once first pointer has done a full applicantsPerProject * numProjects sweep
-      const alloc2Len = allocations[swap.alloc2Index].applicants.length;
-      swap.j = (swap.j + 1) % alloc2Len;
-      if (swap.j === 0) swap.alloc2Index = (swap.alloc2Index + 1) % allocations.length;
-    }
-  }
-
-  return [allocations, totalUtility];
+    return [allocations, totalUtility];
 }
 
 /**
@@ -115,9 +119,9 @@ function singleHeuristicAscent(startingAllocations: Allocation[]): [Allocation[]
  * Rounds up to overestimate.
  */
 function getMaxIgnores(numProjects: number, numApplicants: number) {
-  if (numProjects === 0 || numApplicants === 0) return 0;
-  const maxApplicantsPerProject = Math.ceil(numApplicants / numProjects);
-  return (maxApplicantsPerProject * numProjects) * (maxApplicantsPerProject * (numProjects - 1));
+    if (numProjects === 0 || numApplicants === 0) return 0;
+    const maxApplicantsPerProject = Math.ceil(numApplicants / numProjects);
+    return maxApplicantsPerProject * numProjects * (maxApplicantsPerProject * (numProjects - 1));
 }
 
 /**
@@ -129,29 +133,29 @@ function getMaxIgnores(numProjects: number, numApplicants: number) {
  * @returns Net change in utility (0 if no swap)
  */
 function swapApplicants(swap: Swap): number {
-  const  { alloc1, i, alloc2, j } = swap;
-  const alloc1OldUtility = alloc1.utility;
-  const alloc2OldUtility = alloc2.utility;
+    const { alloc1, i, alloc2, j } = swap;
+    const alloc1OldUtility = alloc1.utility;
+    const alloc2OldUtility = alloc2.utility;
 
-  // console.log(`******************************** Trying ${alloc1.project.name}[${i}] <-> ${alloc2.project.name}[${j}]`);
+    // console.log(`******************************** Trying ${alloc1.project.name}[${i}] <-> ${alloc2.project.name}[${j}]`);
 
-  // Swap
-  [alloc1.applicants[i], alloc2.applicants[j]] = [alloc2.applicants[j], alloc1.applicants[i]];
-
-  const alloc1NewUtility = calculateUtilityOfAllocation(alloc1);
-  const alloc2NewUtility = calculateUtilityOfAllocation(alloc2);
-  const netChangeInUtility = alloc1NewUtility + alloc2NewUtility - alloc1OldUtility - alloc2OldUtility;
-
-  // Check if worth it
-  if (netChangeInUtility > 0) {
-    console.log(`Found swap with net utility change ${netChangeInUtility}. Swapped!`);
-    alloc1.utility = alloc1NewUtility;
-    alloc2.utility = alloc2NewUtility;
-    return netChangeInUtility;
-  } else {
-    // console.log(`Found swap with net utility change ${netChangeInUtility}. Ignoring.`);
-    // Swap back
+    // Swap
     [alloc1.applicants[i], alloc2.applicants[j]] = [alloc2.applicants[j], alloc1.applicants[i]];
-    return 0; // Report 0 since no swap
-  }
+
+    const alloc1NewUtility = calculateUtilityOfAllocation(alloc1);
+    const alloc2NewUtility = calculateUtilityOfAllocation(alloc2);
+    const netChangeInUtility = alloc1NewUtility + alloc2NewUtility - alloc1OldUtility - alloc2OldUtility;
+
+    // Check if worth it
+    if (netChangeInUtility > 0) {
+        console.log(`Found swap with net utility change ${netChangeInUtility}. Swapped!`);
+        alloc1.utility = alloc1NewUtility;
+        alloc2.utility = alloc2NewUtility;
+        return netChangeInUtility;
+    } else {
+        // console.log(`Found swap with net utility change ${netChangeInUtility}. Ignoring.`);
+        // Swap back
+        [alloc1.applicants[i], alloc2.applicants[j]] = [alloc2.applicants[j], alloc1.applicants[i]];
+        return 0; // Report 0 since no swap
+    }
 }

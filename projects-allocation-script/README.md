@@ -25,11 +25,11 @@ Data [here](https://drive.google.com/drive/u/2/folders/1YmywtfQkJ557tyt6pU41PSGS
 - `pnpm build`
 - Add `team-preference.csv` (TODO: examples)
 - `pnpm run preprocess`: runs the preprocessing script
-  - Input: raw applicants
-  - Output: accepted applicants + rejected applicants + designers, formatted correctly
+    - Input: raw applicants
+    - Output: accepted applicants + rejected applicants + designers, formatted correctly
 - `pnpm run allocate`:
-  - Input: accepted applicants & team preferences
-  - Output: applicants, split into teams (1 CSV per team)
+    - Input: accepted applicants & team preferences
+    - Output: applicants, split into teams (1 CSV per team)
 
 I/O is always as a CSV.
 

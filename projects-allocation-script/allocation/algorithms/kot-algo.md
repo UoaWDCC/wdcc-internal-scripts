@@ -15,7 +15,7 @@ class ProjectAllocation {
 
 ApplicantQueue[n] // queue of unmatched applicants
 
-for applicant in ApplicantQueue: 
+for applicant in ApplicantQueue:
     curr_choice = pop first choice from list of preferences
     contribution = calculate_contribution(applicant, curr_choice)
     if curr_choice pq is not full:
