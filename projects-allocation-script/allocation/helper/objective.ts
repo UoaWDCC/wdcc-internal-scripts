@@ -8,7 +8,9 @@ const { A, B, C, D, E, F } = config.allocation;
  * This is the objective function.
  */
 export function calculateTotalUtility(allocations: Allocation[]): number {
-    return allocations.map((allocation) => calculateUtilityOfAllocation(allocation)).reduce((sum, utility) => sum + utility);
+    return allocations
+        .map((allocation) => calculateUtilityOfAllocation(allocation))
+        .reduce((sum, utility) => sum + utility);
 }
 
 /**
@@ -35,7 +37,7 @@ export function calculateUtilityOfAllocation(allocation: Allocation, log: boolea
     // Overall ROLE (FE/BE) dissatisfaction metric
     const targetBePrefSum = n * project.backendWeighting;
     const rolePrefDeviation = Math.abs(bePrefSum - targetBePrefSum);
-    const rolePrefScore = n*5 - rolePrefDeviation;
+    const rolePrefScore = n * 5 - rolePrefDeviation;
 
     // Experience level metrics
     const beExpScore = beExpSum * project.backendDifficulty;
@@ -43,15 +45,20 @@ export function calculateUtilityOfAllocation(allocation: Allocation, log: boolea
 
     // Priority & objective score
     const priorityExpMultiplier = 1 + E * project.priority;
-    const objectiveScore = A * projectPrefScore + B * rolePrefScore + priorityExpMultiplier * (C * beExpScore + D * feExpScore);
+    const objectiveScore =
+        A * projectPrefScore + B * rolePrefScore + priorityExpMultiplier * (C * beExpScore + D * feExpScore);
 
     // Logging (bit of a hack...)
     if (log) {
-        console.log(`  Proj pref: ${projectPrefScore.toFixed(2)}/${n*5}`);
-        console.log(`  Role pref: ${rolePrefScore.toFixed(2)}/${n*5}    (target: ${targetBePrefSum} sum: ${bePrefSum})`);
-        console.log(`  BE exp:    ${beExpScore.toFixed(2)}/${n*25}    (${beExpSum} * ${project.backendDifficulty})`);
-        console.log(`  FE exp:    ${feExpScore.toFixed(2)}/${n*25}    (${feExpSum} * ${project.frontendDifficulty})`);
-        console.log(`  Objective: ${objectiveScore.toFixed(2)}       ${A} * ${projectPrefScore} + ${B} * ${rolePrefScore} + ${priorityExpMultiplier}(${C} * ${beExpScore} + ${D} * ${feExpScore})`);
+        console.log(`  Proj pref: ${projectPrefScore.toFixed(2)}/${n * 5}`);
+        console.log(
+            `  Role pref: ${rolePrefScore.toFixed(2)}/${n * 5}    (target: ${targetBePrefSum} sum: ${bePrefSum})`
+        );
+        console.log(`  BE exp:    ${beExpScore.toFixed(2)}/${n * 25}    (${beExpSum} * ${project.backendDifficulty})`);
+        console.log(`  FE exp:    ${feExpScore.toFixed(2)}/${n * 25}    (${feExpSum} * ${project.frontendDifficulty})`);
+        console.log(
+            `  Objective: ${objectiveScore.toFixed(2)}       ${A} * ${projectPrefScore} + ${B} * ${rolePrefScore} + ${priorityExpMultiplier}(${C} * ${beExpScore} + ${D} * ${feExpScore})`
+        );
 
         // Sanity check just to ensure there are people who COULD do each role in each team (will be duplicates)
         let numFrontend = 0;

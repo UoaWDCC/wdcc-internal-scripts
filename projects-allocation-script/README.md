@@ -1,5 +1,22 @@
 # How to use these scripts
 
+## New Folder Structure (introduced 2026)
+
+```
+cmd/                        // main entrypoint folder
+    preprocess.ts           // -> script to preprocess applicants
+    allocate.ts             // -> script to do the allocation
+allocation/                 // main allocation folder
+    algorithms/             // -> contains all the algorithms hehe
+    helper/                 // -> helper functions for the algorithms
+csv/                        // csv parser folder
+config/                     // main config folder
+    config.ts               // -> file config mappings
+    mapping.ts              // -> csv mappings
+common/                     // any common utils/types
+    types.ts
+```
+
 Data [here](https://drive.google.com/drive/u/2/folders/1YmywtfQkJ557tyt6pU41PSGSBSShB9jG) (download both sheets as CSVs).
 
 ### Prod
@@ -8,11 +25,11 @@ Data [here](https://drive.google.com/drive/u/2/folders/1YmywtfQkJ557tyt6pU41PSGS
 - `pnpm build`
 - Add `team-preference.csv` (TODO: examples)
 - `pnpm run preprocess`: runs the preprocessing script
-  - Input: raw applicants
-  - Output: accepted applicants + rejected applicants + designers, formatted correctly
+    - Input: raw applicants
+    - Output: accepted applicants + rejected applicants + designers, formatted correctly
 - `pnpm run allocate`:
-  - Input: accepted applicants & team preferences
-  - Output: applicants, split into teams (1 CSV per team)
+    - Input: accepted applicants & team preferences
+    - Output: applicants, split into teams (1 CSV per team)
 
 I/O is always as a CSV.
 

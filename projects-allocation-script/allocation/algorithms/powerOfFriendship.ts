@@ -4,5 +4,5 @@ import { stableMatching } from "./stableMatching.js";
 
 /** 🤝 */
 export function powerOfFriendship(applicants: Applicant[], projects: Project[]): Allocation[] {
-  return heuristicAscent(() => stableMatching(applicants, projects));
+    return heuristicAscent(() => stableMatching(applicants, projects));
 }
