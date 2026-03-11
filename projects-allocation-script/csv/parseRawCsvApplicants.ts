@@ -1,7 +1,7 @@
 import fs from "fs";
 import Papa from "papaparse";
 
-import { Applicant } from "../models.js";
+import { Applicant } from "../common/models.js";
 import { mapExperience } from "./helper/mapExperience.js";
 
 /**

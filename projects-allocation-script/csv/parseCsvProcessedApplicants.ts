@@ -1,7 +1,7 @@
 import fs from "fs";
 import Papa from "papaparse";
 
-import { Applicant } from "../models.js";
+import { Applicant } from "../common/models.js";
 
 export const parseProcessedCsvApplicants = (filePath: string): Promise<Applicant[]> => {
     return new Promise((resolve, reject) => {

@@ -2,9 +2,9 @@
 import { powerOfFriendship } from "../allocation/algorithms/powerOfFriendship.js";
 import { randomlyAllocate } from "../allocation/helper/random.js";
 import { logAllocationRankingList } from "../allocation/helper/utils.js";
-import { parseProcessedCsvApplicants } from "../common/csvParser/parseCsvProcessedApplicants.js";
-import { parseCsvProjects } from "../common/csvParser/parseCsvProjects.js";
-import { writeCsv } from "../common/csvParser/writeCsv.js";
+import { parseProcessedCsvApplicants } from "../csv/parseCsvProcessedApplicants.js";
+import { parseCsvProjects } from "../csv/parseCsvProjects.js";
+import { writeCsv } from "../csv/writeCsv.js";
 import { config } from "../config.js";
 
 const allocate = async () => {

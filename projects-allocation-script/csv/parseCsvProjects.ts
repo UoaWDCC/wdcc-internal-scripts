@@ -1,7 +1,7 @@
 import fs from "fs";
 import Papa from "papaparse";
 
-import { Project } from "../models.js";
+import { Project } from "../common/models.js";
 
 export const parseCsvProjects = (filePath: string): Promise<Project[]> => {
     return new Promise((resolve, reject) => {

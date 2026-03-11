@@ -19,8 +19,8 @@
         "dev": "tsc --watch",
         "lint": "eslint **/*.ts --fix",
         "lint:prettier": "prettier --write --config .prettierrc .",
-        "preprocess": "node dist/preprocess",
-        "allocate": "node dist/allocation",
+        "preprocess": "node dist/cmd/preprocess.js",
+        "allocate": "node dist/cmd/allocate.js",
         "p": "pnpm run preprocess",
         "a": "pnpm run allocate",
         "test": "node dist/allocation/test"

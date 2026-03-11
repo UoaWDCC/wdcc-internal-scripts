@@ -1,7 +1,7 @@
 import path from "path";
 
-import { parseRawCsvApplicants } from "../common/csvParser/parseRawCsvApplicants.js";
-import { writeCsv } from "../common/csvParser/writeCsv.js";
+import { parseRawCsvApplicants } from "../csv/parseRawCsvApplicants.js";
+import { writeCsv } from "../csv/writeCsv.js";
 import { config } from "../config.js";
 
 console.log("Running preprocess script...");
