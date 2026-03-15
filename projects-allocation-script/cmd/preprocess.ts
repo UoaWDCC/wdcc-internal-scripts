@@ -43,7 +43,7 @@ applicants = applicants.filter(applicant => applicant.rolePreference !== "Design
 console.log("[INFO] Writing applicants to CSV...");
 writeCsv(applicants, outputApplicantCsvPath);
 
-console.log(`[SUCCESS] Preprocess of applicants complete. Output saved to: ${outputApplicantCsvPath} 🚀`);
+console.log(`[SUCCESS] Preprocess of applicants complete. Output saved to: ${outputApplicantCsvPath}`);
 
 console.log("[INFO] Writing designers to csv");
 writeCsv(designers, outputDesignerCsvPath);
@@ -51,5 +51,5 @@ writeCsv(designers, outputDesignerCsvPath);
 console.log("[INFO] Writing flaggedApplicants to csv");
 writeCsv(flaggedApplicants, outputFlaggedApplicantsCsvPath);
 
-console.log(`[SUCCESS] Preprocess of designers complete. Output saved to: ${outputDesignerCsvPath} 🚀`);
+console.log(`[SUCCESS] Preprocess of designers complete. Output saved to: ${outputDesignerCsvPath}`);
 console.log("[INFO] Finished preprocessing")
