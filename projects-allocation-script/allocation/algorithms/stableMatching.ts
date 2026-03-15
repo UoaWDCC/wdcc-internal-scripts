@@ -1,7 +1,7 @@
 // --- script for gale shapley ---
 
 import { IGetCompareValue, MinPriorityQueue } from "@datastructures-js/priority-queue";
-import { Allocation, Applicant, Project } from "../../common/models.js";
+import { Allocation, Applicant, Project } from "../../common/types.js";
 
 function _calculateContribution(projectAllocation: ProjectAllocation, applicant: Applicant): number {
     // how to calculate the multipliers
@@ -22,7 +22,7 @@ function _calculateContribution(projectAllocation: ProjectAllocation, applicant:
 
     return (
         2 *
-            (projectAllocation.project.priority - 1.5) *
+            (projectAllocation.project.experienceWeighting - 1.5) *
             (front_multiplier * applicant.frontendExperience + back_multiplier * applicant.backendExperience) +
         projectAllocation.project.backendWeighting * applicant.backendPreference
     );

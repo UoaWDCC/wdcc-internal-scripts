@@ -1,4 +1,4 @@
-import { Allocation } from "../../common/models.js";
+import { Allocation } from "../../common/types.js";
 import { calculateTotalUtility } from "../helper/objective.js";
 
 function testCalculateTotalUtility() {
@@ -10,7 +10,7 @@ function testCalculateTotalUtility() {
                 backendDifficulty: 4,
                 frontendDifficulty: 5,
                 backendWeighting: 4,
-                priority: 0,
+                experienceWeighting: 0,
             },
             applicants: [
                 {
@@ -30,11 +30,9 @@ function testCalculateTotalUtility() {
                     projectChoices: ["A", "B", "C", "D", "E"],
                     passionBlurb: "",
                     portfolioLink: "",
+					cvLink: "",
+					jobContact: "",
                     additionalInfo: "",
-                    execComments: "",
-                    creativityHire: "",
-                    rizzLevel: 0,
-                    requestedProject: "",
                 },
                 {
                     timestamp: new Date(),
@@ -53,11 +51,9 @@ function testCalculateTotalUtility() {
                     projectChoices: ["D", "B", "C", "A", "E"],
                     passionBlurb: "",
                     portfolioLink: "",
+					cvLink: "",
+					jobContact: "",
                     additionalInfo: "",
-                    execComments: "",
-                    creativityHire: "",
-                    rizzLevel: 0,
-                    requestedProject: "",
                 },
                 {
                     timestamp: new Date(),
@@ -76,11 +72,9 @@ function testCalculateTotalUtility() {
                     projectChoices: ["F", "B", "C", "D", "A"],
                     passionBlurb: "",
                     portfolioLink: "",
+					cvLink: "",
+					jobContact: "",
                     additionalInfo: "",
-                    execComments: "",
-                    creativityHire: "",
-                    rizzLevel: 0,
-                    requestedProject: "",
                 },
             ],
         },
@@ -91,7 +85,7 @@ function testCalculateTotalUtility() {
                 backendDifficulty: 4,
                 frontendDifficulty: 5,
                 backendWeighting: 4,
-                priority: 0,
+                experienceWeighting: 0,
             },
             applicants: [
                 {
@@ -111,11 +105,9 @@ function testCalculateTotalUtility() {
                     projectChoices: ["A", "B", "C", "D", "E"],
                     passionBlurb: "",
                     portfolioLink: "",
+					cvLink: "",
+					jobContact: "",
                     additionalInfo: "",
-                    execComments: "",
-                    creativityHire: "",
-                    rizzLevel: 0,
-                    requestedProject: "",
                 },
                 {
                     timestamp: new Date(),
@@ -134,11 +126,9 @@ function testCalculateTotalUtility() {
                     projectChoices: ["D", "B", "C", "A", "E"],
                     passionBlurb: "",
                     portfolioLink: "",
+					cvLink: "",
+					jobContact: "",
                     additionalInfo: "",
-                    execComments: "",
-                    creativityHire: "",
-                    rizzLevel: 0,
-                    requestedProject: "",
                 },
                 {
                     timestamp: new Date(),
@@ -158,10 +148,8 @@ function testCalculateTotalUtility() {
                     passionBlurb: "",
                     portfolioLink: "",
                     additionalInfo: "",
-                    execComments: "",
-                    creativityHire: "",
-                    rizzLevel: 0,
-                    requestedProject: "",
+					cvLink: "",
+					jobContact: "",
                 },
             ],
         },

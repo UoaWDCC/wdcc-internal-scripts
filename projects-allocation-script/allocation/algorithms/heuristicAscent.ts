@@ -1,4 +1,4 @@
-import { Allocation, Applicant, Project } from "../../common/models.js";
+import { Allocation, Applicant, Project } from "../../common/types.js";
 import { config } from "../../config.js";
 import { calculateUtilityOfAllocation } from "../helper/objective.js";
 import { randomlyAllocate } from "../helper/random.js";

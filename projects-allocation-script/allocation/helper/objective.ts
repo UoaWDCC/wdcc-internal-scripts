@@ -1,7 +1,7 @@
-import { Allocation, Applicant, Project } from "../../common/models.js";
+import { Allocation, Applicant, Project } from "../../common/types.js";
 import { config } from "../../config.js";
 
-const { A, B, C, D, E, F } = config.allocation;
+const { A, B, C, D, E } = config.allocation;
 
 /**
  * Helper function to get total utility (happiness score) of a full set of project allocations.
@@ -44,7 +44,7 @@ export function calculateUtilityOfAllocation(allocation: Allocation, log: boolea
     const feExpScore = feExpSum * project.frontendDifficulty;
 
     // Priority & objective score
-    const priorityExpMultiplier = 1 + E * project.priority;
+    const priorityExpMultiplier = 1 + E * project.experienceWeighting;
     const objectiveScore =
         A * projectPrefScore + B * rolePrefScore + priorityExpMultiplier * (C * beExpScore + D * feExpScore);
 
@@ -77,12 +77,6 @@ export function calculateUtilityOfAllocation(allocation: Allocation, log: boolea
 
 /** 5 for first choice, 4 for second choice ... 0 for not chosen */
 function getApplicantUtilityFromProject(applicant: Applicant, project: Project): number {
-    // Special requests
-    if (applicant.requestedProject === project.name) {
-        return F;
-    }
-
-    // Choice rankings
     for (const [i, choice] of applicant.projectChoices.entries()) {
         if (choice === project.name) {
             return 5 - i;

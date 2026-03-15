@@ -1,4 +1,4 @@
-import { Allocation, Applicant, Project } from "../../common/models.js";
+import { Allocation, Applicant, Project } from "../../common/types.js";
 import { heuristicAscent } from "./heuristicAscent.js";
 import { stableMatching } from "./stableMatching.js";
 

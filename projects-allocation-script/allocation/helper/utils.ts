@@ -1,4 +1,4 @@
-import { Allocation } from "../../common/models.js";
+import { Allocation } from "../../common/types.js";
 import { calculateTotalUtility, calculateUtilityOfAllocation } from "./objective.js";
 
 export function logAllocationRanking(allocation: Allocation[]) {

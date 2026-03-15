@@ -1,4 +1,4 @@
-import { Allocation, Applicant, Project } from "../../common/models.js";
+import { Allocation, Applicant, Project } from "../../common/types.js";
 
 /**
  * Randomly orders the array. Does not mutate the array.

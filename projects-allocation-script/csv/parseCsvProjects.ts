@@ -1,7 +1,7 @@
 import fs from "fs";
 import Papa from "papaparse";
 
-import { Project } from "../common/models.js";
+import { Project } from "../common/types.js";
 
 export const parseCsvProjects = (filePath: string): Promise<Project[]> => {
     return new Promise((resolve, reject) => {
@@ -18,7 +18,7 @@ export const parseCsvProjects = (filePath: string): Promise<Project[]> => {
                         backendDifficulty: row["How difficult do you expect your backend development to be?"],
                         frontendDifficulty: row["How difficult do you expect your frontend development to be?"],
                         backendWeighting: row["What's the backend-frontend weighting of your project?"],
-                        priority: row["What's your preference for beginners vs experienced members?"],
+                        experienceWeighting: row["What's your preference for beginners vs experienced members?"],
                     }));
 
                     resolve(projects);

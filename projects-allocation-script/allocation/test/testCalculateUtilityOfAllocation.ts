@@ -1,4 +1,4 @@
-import { Allocation } from "../../common/models.js";
+import { Allocation } from "../../common/types.js";
 import { calculateUtilityOfAllocation } from "../helper/objective.js";
 
 function testCalculateUtilityOfAllocation() {
@@ -9,7 +9,7 @@ function testCalculateUtilityOfAllocation() {
             backendDifficulty: 4,
             frontendDifficulty: 5,
             backendWeighting: 4,
-            priority: 0,
+            experienceWeighting: 0,
         },
         applicants: [
             {
@@ -29,11 +29,9 @@ function testCalculateUtilityOfAllocation() {
                 projectChoices: ["A", "B", "C", "D", "E"],
                 passionBlurb: "",
                 portfolioLink: "",
+				cvLink: "",
+				jobContact: "",
                 additionalInfo: "",
-                execComments: "",
-                creativityHire: "",
-                rizzLevel: 0,
-                requestedProject: "",
             },
             {
                 timestamp: new Date(),
@@ -52,11 +50,9 @@ function testCalculateUtilityOfAllocation() {
                 projectChoices: ["D", "B", "C", "A", "E"],
                 passionBlurb: "",
                 portfolioLink: "",
+				cvLink: "",
+				jobContact: "",
                 additionalInfo: "",
-                execComments: "",
-                creativityHire: "",
-                rizzLevel: 0,
-                requestedProject: "",
             },
             {
                 timestamp: new Date(),
@@ -75,11 +71,9 @@ function testCalculateUtilityOfAllocation() {
                 projectChoices: ["F", "B", "C", "D", "A"],
                 passionBlurb: "",
                 portfolioLink: "",
+				cvLink: "",
+				jobContact: "",
                 additionalInfo: "",
-                execComments: "",
-                creativityHire: "",
-                rizzLevel: 0,
-                requestedProject: "",
             },
         ],
     };

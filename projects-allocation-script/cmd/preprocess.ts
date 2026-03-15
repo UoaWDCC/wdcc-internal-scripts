@@ -19,7 +19,7 @@ const inputCsvPath = inputFile.replace(/\\/g, "/");
 
 console.log(`[INFO] Parsing CSV from: ${inputCsvPath}`);
 
-let applicants = await parseApplicantsCsv(inputCsvPath);
+let applicants = await parseApplicantsCsv(inputCsvPath, true);
 if (!applicants || applicants.length === 0) {
 	console.error("[ERROR] No valid applicants data found.");
     process.exit(1);
