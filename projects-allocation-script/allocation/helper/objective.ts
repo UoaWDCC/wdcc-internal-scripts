@@ -10,7 +10,7 @@ const { A, B, C, D, E, F } = config.allocation;
 export function calculateTotalUtility(allocations: Allocation[]): number {
     return allocations
         .map((allocation) => calculateUtilityOfAllocation(allocation))
-        .reduce((sum, utility) => sum + utility);
+        .reduce((sum, utility) => sum + utility, 0);
 }
 
 /**
