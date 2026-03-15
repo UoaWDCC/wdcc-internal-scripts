@@ -18,7 +18,7 @@ export const parseRawCsvApplicants = (filePath: string): Promise<Applicant[]> =>
             skipEmptyLines: true,
             complete: (result) => {
                 try {
-                    const applicants: Applicant[] = result.data.map((row: any, index: number) => ({
+                    const applicants: Applicant[] = result.data.map((row: unknown, index: number) => ({
                         timestamp: new Date(row["Timestamp"]),
                         id: index,
                         name: row["What is your full name?"],

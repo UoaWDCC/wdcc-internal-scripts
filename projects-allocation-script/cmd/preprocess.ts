@@ -1,75 +1,55 @@
 import path from "path";
 
-import { parseRawCsvApplicants } from "../csv/parseRawCsvApplicants.js";
+import { parseApplicantsCsv } from "../csv/parseApplicants.js";
 import { writeCsv } from "../csv/writeCsv.js";
-import { config } from "../config.js";
+import { preprocessConfig } from "../config/scriptConfig.js"
 
-console.log("Running preprocess script...");
-const { inFile, outFile, outFileDesigners, outFileFlagged } = config.preprocess;
+console.log("[INFO] Running preprocess script...");
 
-const outputApplicantCsvPath = path.resolve(outFile);
-const outputDesignerCsvPath = path.resolve(outFileDesigners);
-const outputFlaggedApplicantsCsvPath = path.resolve(outFileFlagged);
-if (!inFile) {
-    console.error("❌ Error: Please provide a CSV file path as an argument.");
-    console.log("Usage: see config.js");
+const { inputFile, outputFile, outputFileDesigners, outputFileFlagged } = preprocessConfig
+const outputApplicantCsvPath = path.resolve(outputFile);
+const outputDesignerCsvPath = path.resolve(outputFileDesigners);
+const outputFlaggedApplicantsCsvPath = path.resolve(outputFileFlagged);
+
+if (!inputFile) {
+    console.error("[ERROR] Please provide the input CSV file path inside /config/scriptConfig.ts")
+    process.exit(1);
+}
+const inputCsvPath = inputFile.replace(/\\/g, "/");
+
+console.log(`[INFO] Parsing CSV from: ${inputCsvPath}`);
+
+let applicants = await parseApplicantsCsv(inputCsvPath);
+if (!applicants || applicants.length === 0) {
+	console.error("[ERROR] No valid applicants data found.");
     process.exit(1);
 }
 
-// Convert backslashes to forward slashes, maybe theres a better way to do this.
-// Nah looks good 👍
-const inputCsvPath = inFile.replace(/\\/g, "/");
+console.log(`[SUCCESS] Successfully parsed ${applicants.length} applicants.`);
 
-console.log(`Parsing CSV from: ${inputCsvPath}`);
+const designers = applicants.filter(applicant => applicant.rolePreference === "Designer")
+console.log(`[INFO] There are ${designers.length} designers`);
 
-const preProcess = async () => {
-    try {
-        let applicants = await parseRawCsvApplicants(inputCsvPath);
+console.log("========");
 
-        if (!applicants || applicants.length === 0) {
-            console.error("❌ No valid applicants data found.");
-            return;
-        }
+console.log("[INFO] Filtering applicants based on if they have a passionBlurb < 100 char");
+const flaggedApplicants = applicants.filter(
+	(applicant) => (applicant.passionBlurb && applicant.passionBlurb.length < 100)
+);
 
-        console.log(`✅ Successfully parsed ${applicants.length} applicants.`);
+console.log("[INFO] Filtering applicants based on if they're a designer");
+applicants = applicants.filter(applicant => applicant.rolePreference !== "Designer")
 
-        const designers = applicants.filter(
-            (applicant) =>
-                applicant.creativityHire?.toLowerCase() === "creative maybe" ||
-                applicant.creativityHire?.toLowerCase() === "creative guarantee"
-        );
+console.log("[INFO] Writing applicants to CSV...");
+writeCsv(applicants, outputApplicantCsvPath);
 
-        console.log(`There are ${designers.length} designers`);
+console.log(`[SUCCESS] Preprocess of applicants complete. Output saved to: ${outputApplicantCsvPath} 🚀`);
 
-        console.log("Filtering applicants based on if they have a passionBlurb < 100 char ");
+console.log("[INFO] Writing designers to csv");
+writeCsv(designers, outputDesignerCsvPath);
 
-        // TODO this filtering doesn't take into account rizzLevel properly
-        const flaggedApplicants = applicants.filter(
-            (applicant) => (applicant.passionBlurb && applicant.passionBlurb.length < 100) || applicant.rizzLevel === 1
-        );
-        applicants = applicants.filter(
-            (applicant) =>
-                !((applicant.passionBlurb && applicant.passionBlurb.length < 100) || applicant.rizzLevel === 1)
-        );
+console.log("[INFO] Writing flaggedApplicants to csv");
+writeCsv(flaggedApplicants, outputFlaggedApplicantsCsvPath);
 
-        console.log("Filtering applicants based on if they're a designer");
-        applicants = applicants.filter((applicant) => !designers.includes(applicant));
-
-        console.log("Writing applicants to CSV...");
-        writeCsv(applicants, outputApplicantCsvPath);
-
-        console.log(`✅ Preprocess of applicants complete. Output saved to: ${outputApplicantCsvPath} 🚀`);
-
-        console.log("Writing designers to csv");
-        writeCsv(designers, outputDesignerCsvPath);
-
-        console.log("Writing flaggedApplicants to csv");
-        writeCsv(flaggedApplicants, outputFlaggedApplicantsCsvPath);
-
-        console.log(`✅ Preprocess of designers complete. Output saved to: ${outputDesignerCsvPath} 🚀`);
-    } catch (error) {
-        console.error("❌ Error during CSV parsing:", error);
-    }
-};
-
-preProcess();
+console.log(`[SUCCESS] Preprocess of designers complete. Output saved to: ${outputDesignerCsvPath} 🚀`);
+console.log("[INFO] Finished preprocessing")
