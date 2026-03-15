@@ -11,7 +11,7 @@ import { APPLICANT_COLUMNS, EXPERIENCE_MAPPING } from "../config/csvMappings.js"
  * @returns Promise resolving to an array of Applicant objects.
  */
 export function parseApplicantsCsv(filePath: string, raw: boolean): Promise<Applicant[]> {
-	return new Promise((resolve) => {
+	return new Promise((resolve, reject) => {
 		const fileContent = fs.readFileSync(filePath, "utf8");
 
 		Papa.parse<Record<string, string>>(fileContent, {
@@ -77,6 +77,9 @@ export function parseApplicantsCsv(filePath: string, raw: boolean): Promise<Appl
 					}
 				})
 				resolve(applicants)
+			},
+			error: (error: Error) => {
+				reject(error.message);
 			}
 		})
 	})

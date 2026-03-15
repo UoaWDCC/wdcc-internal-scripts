@@ -2,29 +2,38 @@ import fs from "fs";
 import Papa from "papaparse";
 
 import { Project } from "../common/types.js";
+import { PROJECT_COLUMNS } from "../config/csvMappings.js";
 
+/**
+ * Parses a CSV file and returns an array of Project objects.
+ * @param filePath Path to the CSV file.
+ * @returns Promise resolving to an array of Project objects.
+ */
 export const parseCsvProjects = (filePath: string): Promise<Project[]> => {
     return new Promise((resolve, reject) => {
         const fileContent = fs.readFileSync(filePath, "utf8");
 
-        Papa.parse(fileContent, {
+        Papa.parse<Record<string, string>>(fileContent, {
             header: true,
             skipEmptyLines: true,
             complete: (result) => {
-                try {
-                    const projects: Project[] = result.data.map((row: any, index: number) => ({
-                        id: index,
-                        name: row["What is the name of your project?"],
-                        backendDifficulty: row["How difficult do you expect your backend development to be?"],
-                        frontendDifficulty: row["How difficult do you expect your frontend development to be?"],
-                        backendWeighting: row["What's the backend-frontend weighting of your project?"],
-                        experienceWeighting: row["What's your preference for beginners vs experienced members?"],
-                    }));
+				const projects: Project[] = result.data.flatMap((row: Record<string, string>, index: number) => {
+					try {
+						return [{
+							id: index,
+							name: row[PROJECT_COLUMNS.name],
+							backendWeighting: Number(row[PROJECT_COLUMNS.backendWeighting]),
+							frontendDifficulty: Number(row[PROJECT_COLUMNS.frontendDifficulty]),
+							backendDifficulty: Number(row[PROJECT_COLUMNS.backendDifficulty]),
+							experienceWeighting: Number(row[PROJECT_COLUMNS.experienceWeighting]),
+						}]
+					} catch (error) {
+						console.error(`index:${index} - parsing error: ${error}`)
+						return []
+					}
+				});
 
-                    resolve(projects);
-                } catch (error) {
-                    reject(error);
-                }
+				resolve(projects);
             },
             error: (error: Error) => {
                 reject(error.message);
