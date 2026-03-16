@@ -134,6 +134,18 @@ function getMaxIgnores(numProjects: number, numApplicants: number) {
  */
 function swapApplicants(swap: Swap): number {
     const { alloc1, i, alloc2, j } = swap;
+    const applicant1 = alloc1.applicants[i];
+    const applicant2 = alloc2.applicants[j];
+    
+    // Check if swapping would violate preferences
+    const applicant1Prefs = applicant1.projectChoices || [];
+    const applicant2Prefs = applicant2.projectChoices || [];
+    
+    // Only allow swap if both applicants prefer their destination project
+    if (!applicant1Prefs.includes(alloc2.project.name) || !applicant2Prefs.includes(alloc1.project.name)) {
+        return 0; // Reject swap - violates preferences
+    }
+    
     const alloc1OldUtility = alloc1.utility;
     const alloc2OldUtility = alloc2.utility;
 
