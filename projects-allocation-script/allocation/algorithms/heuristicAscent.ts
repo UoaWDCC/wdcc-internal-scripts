@@ -1,5 +1,5 @@
 import { Allocation, Applicant, Project } from "../../common/types.js";
-import { config } from "../../config.js";
+import { allocationConfig } from "../../config/scriptConfig.js";
 import { calculateUtilityOfAllocation } from "../helper/objective.js";
 import { randomlyAllocate } from "../helper/random.js";
 import { countAllApplicants } from "../helper/utils.js";
@@ -39,7 +39,7 @@ export function randomHeuristicAscent(applicants: Applicant[], projects: Project
  */
 export function heuristicAscent(
     generator: () => Allocation[],
-    numAscents: number = config.allocation.numAscents
+    numAscents: number = allocationConfig.numAscents
 ): Allocation[] {
     let highestUtility = 0;
     let bestAllocation: Allocation[] = [];
@@ -148,7 +148,6 @@ function swapApplicants(swap: Swap): number {
 
     // Check if worth it
     if (netChangeInUtility > 0) {
-        console.log(`Found swap with net utility change ${netChangeInUtility}. Swapped!`);
         alloc1.utility = alloc1NewUtility;
         alloc2.utility = alloc2NewUtility;
         return netChangeInUtility;

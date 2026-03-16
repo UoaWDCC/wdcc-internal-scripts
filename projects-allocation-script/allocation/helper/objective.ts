@@ -1,7 +1,7 @@
 import { Allocation, Applicant, Project } from "../../common/types.js";
-import { config } from "../../config.js";
+import { allocationConfig } from "../../config/scriptConfig.js";
 
-const { A, B, C, D, E } = config.allocation;
+const { projectPreference, rolePreference, backendExperience, frontendExperience, experienceWeighting } = allocationConfig;
 
 /**
  * Helper function to get total utility (happiness score) of a full set of project allocations.
@@ -44,9 +44,9 @@ export function calculateUtilityOfAllocation(allocation: Allocation, log: boolea
     const feExpScore = feExpSum * project.frontendDifficulty;
 
     // Priority & objective score
-    const priorityExpMultiplier = 1 + E * project.experienceWeighting;
+    const priorityExpMultiplier = 1 + experienceWeighting * project.experienceWeighting;
     const objectiveScore =
-        A * projectPrefScore + B * rolePrefScore + priorityExpMultiplier * (C * beExpScore + D * feExpScore);
+        projectPreference * projectPrefScore + rolePreference * rolePrefScore + priorityExpMultiplier * (backendExperience * beExpScore + frontendExperience * feExpScore);
 
     // Logging (bit of a hack...)
     if (log) {
@@ -57,7 +57,7 @@ export function calculateUtilityOfAllocation(allocation: Allocation, log: boolea
         console.log(`  BE exp:    ${beExpScore.toFixed(2)}/${n * 25}    (${beExpSum} * ${project.backendDifficulty})`);
         console.log(`  FE exp:    ${feExpScore.toFixed(2)}/${n * 25}    (${feExpSum} * ${project.frontendDifficulty})`);
         console.log(
-            `  Objective: ${objectiveScore.toFixed(2)}       ${A} * ${projectPrefScore} + ${B} * ${rolePrefScore} + ${priorityExpMultiplier}(${C} * ${beExpScore} + ${D} * ${feExpScore})`
+            `  Objective: ${objectiveScore.toFixed(2)}       ${projectPreference} * ${projectPrefScore} + ${rolePreference} * ${rolePrefScore} + ${priorityExpMultiplier}(${backendExperience} * ${beExpScore} + ${frontendExperience} * ${feExpScore})`
         );
 
         // Sanity check just to ensure there are people who COULD do each role in each team (will be duplicates)

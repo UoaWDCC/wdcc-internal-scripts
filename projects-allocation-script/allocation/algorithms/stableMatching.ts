@@ -1,36 +1,6 @@
 // --- script for gale shapley ---
-
 import { IGetCompareValue, MinPriorityQueue } from "@datastructures-js/priority-queue";
 import { Allocation, Applicant, Project } from "../../common/types.js";
-
-function _calculateContribution(projectAllocation: ProjectAllocation, applicant: Applicant): number {
-    // how to calculate the multipliers
-    const FRONT = 1;
-    const BACK = 1;
-    const front_multiplier =
-        FRONT *
-        Math.floor(
-            projectAllocation.teamSize * (1 - projectAllocation.project.backendWeighting / 5) -
-                projectAllocation.front_allocated
-        );
-    const back_multiplier =
-        BACK *
-        Math.floor(
-            projectAllocation.teamSize * (projectAllocation.project.backendWeighting / 5) -
-                projectAllocation.back_allocated
-        );
-
-    return (
-        2 *
-            (projectAllocation.project.experienceWeighting - 1.5) *
-            (front_multiplier * applicant.frontendExperience + back_multiplier * applicant.backendExperience) +
-        projectAllocation.project.backendWeighting * applicant.backendPreference
-    );
-}
-
-const getContribution: (project: ProjectAllocation) => IGetCompareValue<Applicant> =
-    (project: ProjectAllocation) => (applicant: Applicant) =>
-        _calculateContribution(project, applicant);
 
 class ProjectAllocation {
     project: Project;
@@ -38,6 +8,7 @@ class ProjectAllocation {
     teamSize: number;
     front_allocated: number;
     back_allocated: number;
+
     constructor(project: Project, teamSize: number) {
         this.project = project;
         this.allocated = new MinPriorityQueue<Applicant>(getContribution(this));
@@ -49,42 +20,47 @@ class ProjectAllocation {
 
 export function stableMatching(applicants: Applicant[], projects: Project[]): Allocation[] {
     const projectTeamSize = Math.floor(applicants.length / projects.length) + 1;
-    console.log(projectTeamSize);
+	console.log(`[INFO] Starting stable matching with team size: ${projectTeamSize}`)
     const allocationResult: Map<string, ProjectAllocation> = new Map(
         projects.map((project) => [project.name, new ProjectAllocation(project, projectTeamSize)])
     );
-    const leftOver: Applicant[] = [];
+    const unmatched: Applicant[] = [];
+    const applicantChosenProject: Map<number, string> = new Map();
 
     // put applicants into a queue
-    const copyApplicant = structuredClone(applicants);
     const applicantQueue = structuredClone(applicants);
 
     while (applicantQueue.length !== 0) {
         const applicant: Applicant = applicantQueue.shift()!;
-        const currChoice: string = applicant.projectChoices.shift()!;
+        const currChoice: string | undefined = applicant.projectChoices.shift();
         if (!currChoice) {
-            leftOver.push(applicant);
+			// this means that applicant did not get chosen for any of their choices
+            unmatched.push(applicant);
             continue;
         }
 
+        applicantChosenProject.set(applicant.id, currChoice);
         const currAllocation: ProjectAllocation = allocationResult.get(currChoice)!;
         if (currAllocation.allocated.size() < projectTeamSize) {
             currAllocation.allocated.enqueue(applicant);
-            currAllocation.front_allocated += 1 - applicant.backendPreference / 5;
-            currAllocation.back_allocated += applicant.backendPreference / 5;
+            updateCapacity(currAllocation, applicant, 1);
         } else {
             const lowest: Applicant = currAllocation.allocated.front()!;
-            currAllocation.front_allocated += 1 - applicant.backendPreference / 5;
-            currAllocation.back_allocated += applicant.backendPreference / 5;
+			const applicantContribution = getContribution(currAllocation)(applicant);
+			const lowestContribution = getContribution(currAllocation)(lowest);
 
-            if (getContribution(currAllocation)(applicant) > getContribution(currAllocation)(lowest)) {
-                currAllocation.allocated.dequeue();
-                currAllocation.front_allocated -= 1 - lowest.backendPreference / 5;
-                currAllocation.back_allocated -= lowest.backendPreference / 5;
-                currAllocation.allocated.enqueue(applicant);
-                currAllocation.front_allocated += 1 - applicant.backendPreference / 5;
-                currAllocation.back_allocated += applicant.backendPreference / 5;
-                applicantQueue.push(lowest);
+            if (applicantContribution > lowestContribution) {
+                const loserChosen = applicantChosenProject.get(lowest.id);
+                // Only swap if the loser's chosen project is this one, or they still have other choices
+                if (loserChosen === currChoice || lowest.projectChoices.length > 0) {
+                    currAllocation.allocated.dequeue();
+                    updateCapacity(currAllocation, lowest, -1);
+                    currAllocation.allocated.enqueue(applicant);
+                    updateCapacity(currAllocation, applicant, 1);
+                    applicantQueue.push(lowest);
+                } else {
+                    applicantQueue.push(applicant);
+                }
             } else {
                 applicantQueue.push(applicant);
             }
@@ -98,28 +74,58 @@ export function stableMatching(applicants: Applicant[], projects: Project[]): Al
 
     // change the applicants list to the original applicant list
     for (const al of arr) {
-        al.applicants = al.applicants.map((applicant) => copyApplicant.find((a) => a.id === applicant.id)!);
+        al.applicants = al.applicants.map((applicant) => applicants.find((a) => a.id === applicant.id)!);
     }
 
-    for (const tempAllocation of arr) {
-        while (tempAllocation.applicants.length < projectTeamSize) {
-            const app = leftOver.shift();
-            if (!app) {
-                break;
+    // Validation: ensure no one is in a project they didn't choose
+    for (const allocation of arr) {
+        for (const applicant of allocation.applicants) {
+            const chosen = applicantChosenProject.get(applicant.id);
+            if (chosen && chosen !== allocation.project.name) {
+                console.warn(`[ERROR] ${applicant.name} is in ${allocation.project.name} but chose ${chosen}`);
             }
-            tempAllocation.applicants.push(app);
         }
     }
 
-    console.log(`length of leftover:  ${leftOver.length}`);
-    for (const app of leftOver) {
-        const a = copyApplicant.find((a) => a.id === app.id);
-        if (!a) {
-            console.log(`----${app.name} : ${app.projectChoices} `);
-            continue;
-        }
-        console.log(`----${app.name} : ${a.projectChoices.map((project) => project.substring(0, 5))} `);
+    console.log(`[INFO] Allocation complete. Unmatched applicants: ${unmatched.length}`);
+    for (const app of unmatched) {
+        const origApp = applicants.find((a) => a.id === app.id);
+        const choices = origApp?.projectChoices.map((project) => project.substring(0, 5)).join(", ") || "none";
+        console.log(`[UNMATCHED] ${app.name} - preferences: ${choices}`);
     }
 
     return arr;
 }
+
+function _calculateContribution(projectAllocation: ProjectAllocation, applicant: Applicant): number {
+    const { project, teamSize, front_allocated, back_allocated, allocated } = projectAllocation;
+    const { backendWeighting, experienceWeighting } = project;
+    const { frontendExperience, backendExperience, backendPreference } = applicant;
+
+    const remainingFrontendCapacity = teamSize * (1 - backendWeighting / 5) - front_allocated;
+    const remainingBackendCapacity = teamSize * (backendWeighting / 5) - back_allocated;
+
+    const frontMultiplier = Math.floor(remainingFrontendCapacity);
+    const backMultiplier = Math.floor(remainingBackendCapacity);
+    const experienceFactor = 2 * (experienceWeighting - 1.5);
+
+    const skillContribution = experienceFactor * (frontMultiplier * frontendExperience + backMultiplier * backendExperience) +
+        backendWeighting * backendPreference;
+
+    // Balance factor: prefer projects with fewer allocated applicants
+    const balanceWeight = 10;
+    const sizeImbalance = teamSize - allocated.size();
+    const balanceContribution = balanceWeight * sizeImbalance;
+
+    return skillContribution + balanceContribution;
+}
+
+function getContribution(project: ProjectAllocation): IGetCompareValue<Applicant> {
+	return (applicant: Applicant) => _calculateContribution(project, applicant)
+}
+
+function updateCapacity(allocation: ProjectAllocation, applicant: Applicant, delta: 1 | -1): void {
+	allocation.front_allocated += delta * (1 - applicant.backendPreference / 5);
+	allocation.back_allocated += delta * applicant.backendPreference / 5;
+}
+

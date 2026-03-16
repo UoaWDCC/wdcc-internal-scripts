@@ -13,22 +13,22 @@ const { inputFileApplicants, inputFileProjects, outputFileFormat } = allocationC
 
 console.log("[INFO] Parsing Applicants CSV...");
 const applicants: Applicant[] = await parseApplicantsCsv(inputFileApplicants, false);
-console.log("Parsing Projects CSV...");
+console.log("[INFO] Parsing Projects CSV...");
 const projectsData: Project[] = await parseCsvProjects(inputFileProjects);
 
 // Algorithm
-console.log("Parsed! Running allocation algorithm...");
+console.log("[INFO] Parsed! Running allocation algorithm...");
 const allocations = powerOfFriendship(applicants, projectsData);
 const randomAllocations = randomlyAllocate(projectsData, applicants);
 logAllocationRankingList(allocations, randomAllocations);
 
 // Output
-console.log(`Writing to CSVs...`);
+console.log(`[INFO] Writing to CSVs...`);
 allocations.forEach((allocation) => {
 	const safeProjectName = allocation.project.name.replace(/[\\/:.]/, "_");
-	console.log(`${safeProjectName} (${allocation.project.id}) has ${allocation.applicants.length} applicants.`);
+	console.log(`[INFO] ${safeProjectName} (${allocation.project.id}) has ${allocation.applicants.length} applicants.`);
 	const outFileName = outputFileFormat.replace("<team>", safeProjectName);
 	writeCsv(allocation.applicants, outFileName);
 });
 
-console.log("Allocation script complete 🚀");
+console.log("[INFO] Allocation script complete");
