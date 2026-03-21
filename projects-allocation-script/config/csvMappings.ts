@@ -25,6 +25,7 @@ export const APPLICANT_COLUMNS: Record<string, string> = {
 	cvLink: "Please upload your CV here (insert a link below)",
 	jobContact: "Would you be interested in being contacted about support with job applications and/or potential job opportunities?",
 	additionalInfo: "Anything else you would like us to know?",
+	execComments: "EXEC NOTES",
 }
 
 export const EXPERIENCE_MAPPING: Record<string, number> = {

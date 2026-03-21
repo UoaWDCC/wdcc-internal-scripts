@@ -47,6 +47,7 @@ export function parseApplicantsCsv(filePath: string, raw: boolean): Promise<Appl
 								cvLink: row[APPLICANT_COLUMNS.cvLink],
 								jobContact: row[APPLICANT_COLUMNS.jobContact],
 								additionalInfo: row[APPLICANT_COLUMNS.additionalInfo],
+								execComments: row[APPLICANT_COLUMNS.execComments],
 							}]
 						} else {
 							return [{
@@ -69,6 +70,7 @@ export function parseApplicantsCsv(filePath: string, raw: boolean): Promise<Appl
 								cvLink: row["cvLink"],
 								jobContact: row["jobContact"],
 								additionalInfo: row["additionalInfo"],
+								execComments: row["execComments"],
 							}]
 						}
 					} catch (error) {
