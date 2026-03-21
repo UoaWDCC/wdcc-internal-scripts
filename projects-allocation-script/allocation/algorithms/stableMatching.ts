@@ -79,6 +79,7 @@ export function stableMatching(applicants: Applicant[], projects: Project[]): Al
     const arr: Allocation[] = Array.from(allocationResult.values()).map((projectAllocation) => ({
         project: projectAllocation.project,
         applicants: projectAllocation.allocated.toArray(),
+		teamSize: projectAllocation.teamSize,
     }));
 
     // change the applicants list to the original applicant list
@@ -101,6 +102,7 @@ export function stableMatching(applicants: Applicant[], projects: Project[]): Al
         arr.push({
             project: projectAllocation.project,
             applicants: allocatees.map((applicant) => applicants.find((a) => a.id === applicant.id)!),
+			teamSize: projectAllocation.teamSize,
         });
     }
 
@@ -108,7 +110,7 @@ export function stableMatching(applicants: Applicant[], projects: Project[]): Al
     for (const allocation of arr) {
         for (const applicant of allocation.applicants) {
             const originalPrefs = originalPreferences.get(applicant.id) || [];
-            
+
             if (!originalPrefs.includes(allocation.project.name)) {
                 console.warn(`[ERROR] ${applicant.name} is in ${allocation.project.name} but originally chose: ${originalPrefs.join(", ")}`);
             }
@@ -169,10 +171,16 @@ function redistributeForBalance(
 
     // Try to balance underfilled projects
     for (const underfilled of allocations) {
+        // Skip if already at or exceeds target
         if (underfilled.allocated.size() >= targetSize) continue;
+        // Skip if at full capacity
+        if (underfilled.allocated.size() >= underfilled.teamSize) continue;
 
-        const needed = targetSize - underfilled.allocated.size();
-        console.log(`[REDISTRIBUTION] ${underfilled.project.name} needs ${needed} more members`);
+        const needed = Math.min(
+            targetSize - underfilled.allocated.size(),
+            underfilled.teamSize - underfilled.allocated.size()
+        );
+        console.log(`[REDISTRIBUTION] ${underfilled.project.name} needs ${needed} more members (current: ${underfilled.allocated.size()}, capacity: ${underfilled.teamSize})`);
 
         for (const overfilled of allocations) {
             if (overfilled.allocated.size() <= targetSize || needed === 0) continue;
@@ -225,7 +233,7 @@ function redistributeForBalance(
     // Log final state
     console.log(`[REDISTRIBUTION] Final team sizes:`);
     for (const allocation of allocations) {
-        console.log(`  ${allocation.project.name}: ${allocation.allocated.size()} members`);
+        console.log(`  ${allocation.project.name}: ${allocation.allocated.size()}/${allocation.teamSize} members`);
     }
 }
 

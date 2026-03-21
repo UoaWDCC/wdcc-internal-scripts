@@ -32,4 +32,5 @@ export type Project = {
 export type Allocation = {
     project: Project;
     applicants: Applicant[];
+	teamSize: number;
 };

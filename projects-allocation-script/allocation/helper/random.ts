@@ -21,14 +21,14 @@ function shuffleArray<T>(array: T[]) {
  * @returns	A list of allocations { project, applicants[] }.
  */
 export function randomlyAllocate(projects: Project[], applicants: Applicant[]): Allocation[] {
-    // Init allocations
-    const allocations: Allocation[] = projects.map((project) => ({ project, applicants: [] }));
-
     // Stats
-    const numProjects = allocations.length;
+    const numProjects = projects.length;
     const numApplicants = applicants.length;
     const applicantsPerProject = Math.floor(numApplicants / numProjects);
     const leftOverApplicants = numApplicants % numProjects;
+
+    // Init allocations
+    const allocations: Allocation[] = projects.map((project) => ({ project, applicants: [], teamSize: applicantsPerProject }));
 
     // Shuffle to avoid bias in the order of applicants
     const shuffledApplicants = shuffleArray(applicants);
