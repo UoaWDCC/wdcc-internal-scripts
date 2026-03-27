@@ -88,12 +88,12 @@ export function stableMatching(applicants: Applicant[], projects: Project[]): Al
     }
 
     // Redistribution phase to balance team sizes
-    // redistributeForBalance(
-    //     Array.from(allocationResult.values()),
-    //     applicants,
-    //     applicantChosenProject,
-    //     originalPreferences
-    // );
+    redistributeForBalance(
+        Array.from(allocationResult.values()),
+        applicants,
+        applicantChosenProject,
+        originalPreferences
+    );
 
     // Rebuild arr with updated allocations after redistribution
     arr.length = 0;
@@ -120,7 +120,7 @@ export function stableMatching(applicants: Applicant[], projects: Project[]): Al
     console.log(`[INFO] Allocation complete. Unmatched applicants: ${unmatched.length}`);
     for (const app of unmatched) {
         const choices = originalPreferences.get(app.id)?.map((project) => project.substring(0, 5)).join(", ") || "none";
-        console.log(`[UNMATCHED] ${app.name} - preferences: ${choices}`);
+        console.log(`[UNMATCHED] ${app.name}:${app.id} - preferences: ${choices}`);
     }
 
     return arr;
