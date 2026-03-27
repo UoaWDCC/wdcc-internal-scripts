@@ -6,7 +6,9 @@ import { parseCsvProjects } from "../csv/parseCsvProjects.js";
 import { writeCsv } from "../csv/writeCsv.js";
 import { allocationConfig } from "../config/scriptConfig.js"
 import { parseApplicantsCsv } from "../csv/parseApplicants.js";
-import { Applicant, Project } from "../common/types.js";
+import { Allocation, Applicant, Project } from "../common/types.js";
+import { stableMatching } from "../allocation/algorithms/stableMatching.js";
+import { heuristicAscent } from "../allocation/algorithms/heuristicAscent.js";
 
 console.log("[INFO] Running allocation script")
 const { inputFileApplicants, inputFileProjects, outputFileFormat } = allocationConfig
@@ -14,17 +16,18 @@ const { inputFileApplicants, inputFileProjects, outputFileFormat } = allocationC
 console.log("[INFO] Parsing Applicants CSV...");
 const applicants: Applicant[] = await parseApplicantsCsv(inputFileApplicants, false);
 console.log("[INFO] Parsing Projects CSV...");
-const projectsData: Project[] = await parseCsvProjects(inputFileProjects);
+const projects: Project[] = await parseCsvProjects(inputFileProjects);
 
 // Algorithm
 console.log("[INFO] Parsed! Running allocation algorithm...");
-const allocations = powerOfFriendship(applicants, projectsData);
-const randomAllocations = randomlyAllocate(projectsData, applicants);
-logAllocationRankingList(allocations, randomAllocations);
+const stableAllocation = stableMatching(applicants, projects)
+const finalAllocation = heuristicAscent(() => stableAllocation);
+const randomAllocations = randomlyAllocate(projects, applicants);
+logAllocationRankingList(finalAllocation, randomAllocations);
 
 // Output
 console.log(`[INFO] Writing to CSVs...`);
-allocations.forEach((allocation) => {
+finalAllocation.forEach((allocation: Allocation) => {
 	const safeProjectName = allocation.project.name.replace(/[\\/:.]/, "_");
 	console.log(`[INFO] ${safeProjectName} (${allocation.project.id}) has ${allocation.applicants.length} applicants.`);
 	const outFileName = outputFileFormat.replace("<team>", safeProjectName);
