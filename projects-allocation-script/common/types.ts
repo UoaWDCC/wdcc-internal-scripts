@@ -18,6 +18,7 @@ export type Applicant = {
 	cvLink: string,
 	jobContact: string,
     additionalInfo: string; // not used
+    execComments: string; // exec notes from the raw form
 };
 
 export type Project = {

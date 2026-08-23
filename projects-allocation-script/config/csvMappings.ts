@@ -1,4 +1,4 @@
-export const APPLICANT_COLUMNS: Record<string, string> = {
+export const APPLICANT_COLUMNS = {
 	timestamp: "Timestamp",
 	name: "What is your full name?",
 	email: "Email address?",
@@ -26,20 +26,20 @@ export const APPLICANT_COLUMNS: Record<string, string> = {
 	jobContact: "Would you be interested in being contacted about support with job applications and/or potential job opportunities?",
 	additionalInfo: "Anything else you would like us to know?",
 	execComments: "EXEC NOTES",
-}
+} as const satisfies Record<string, string>
 
 export const EXPERIENCE_MAPPING: Record<string, number> = {
-    "No experience": 1,
-    "Low experience (some tutorial videos / playing around)": 2,
-    "Moderate experience (course/personal project)": 3,
-    "High experience (intern/work project)": 4,
-    "Pro (many internships and professional work)": 5,
+	"No experience": 1,
+	"Low experience (some tutorial videos / playing around)": 2,
+	"Moderate experience (course/personal project)": 3,
+	"High experience (intern/work project)": 4,
+	"Pro (many internships and professional work)": 5,
 }
 
-export const PROJECT_COLUMNS: Record<string, string> = {
+export const PROJECT_COLUMNS = {
 	name: "What is the name of your project?",
 	backendWeighting: "What's the backend-frontend weighting of your project?",
 	experienceWeighting: "What's your preference for beginners vs experienced members?",
 	frontendDifficulty: "How difficult do you expect your frontend development to be?",
 	backendDifficulty: "How difficult do you expect your backend development to be?",
-}
+} as const satisfies Record<string, string>

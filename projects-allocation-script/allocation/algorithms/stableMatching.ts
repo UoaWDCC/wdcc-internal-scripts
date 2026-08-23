@@ -57,8 +57,7 @@ export function stableMatching(applicants: Applicant[], projects: Project[]): Al
 
             if (applicantContribution > lowestContribution) {
                 const loserChosen = applicantChosenProject.get(lowest.id);
-                const loserOriginalPrefs = originalPreferences.get(lowest.id) || [];
-                const loserHasOtherChoices = loserOriginalPrefs.length > (applicant.projectChoices.length + 1);
+                const loserHasOtherChoices = lowest.projectChoices.length > 0;
                 
                 // Only swap if the loser's chosen project is this one, or they still have other original choices
                 if (loserChosen === currChoice || loserHasOtherChoices) {

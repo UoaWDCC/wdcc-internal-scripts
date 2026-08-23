@@ -146,14 +146,6 @@ function swapApplicants(swap: Swap): number {
         return 0; // Reject swap - violates preferences
     }
     
-    // Check if swapping would exceed capacity
-    const alloc1AtCapacity = alloc1.applicants.length >= alloc1.teamSize;
-    const alloc2AtCapacity = alloc2.applicants.length >= alloc2.teamSize;
-    
-    if (alloc1AtCapacity || alloc2AtCapacity) {
-        return 0; // Reject swap - would exceed capacity
-    }
-    
     const alloc1OldUtility = alloc1.utility;
     const alloc2OldUtility = alloc2.utility;
 

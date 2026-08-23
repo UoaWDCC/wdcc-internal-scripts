@@ -2,10 +2,34 @@ import fs from "fs";
 import path from "path";
 import Papa from "papaparse";
 
+import { allocationConfig, preprocessConfig } from "../config/scriptConfig.js";
+
 console.log("[INFO] Starting validation of allocation results...\n");
 
-const outputDir = "./data/out";
-const applicantsCsvPath = "./data/processedApplicants.csv";
+const outputDir = path.dirname(allocationConfig.outputFileFormat);
+const applicantsCsvPath = preprocessConfig.outputFile;
+
+// Names of the preprocessing artifacts that live alongside the team CSVs
+const preprocessArtifacts = [preprocessConfig.outputFileDesigners, preprocessConfig.outputFileFlagged].map((file) =>
+	path.basename(file)
+);
+
+/**
+ * Parses a CSV file into rows. Wrapped in a Promise so callers await completion
+ * rather than relying on Papa.parse's callback happening to fire synchronously.
+ */
+function parseCsv(filePath: string): Promise<Record<string, string>[]> {
+	return new Promise((resolve, reject) => {
+		const fileContent = fs.readFileSync(filePath, "utf8");
+
+		Papa.parse<Record<string, string>>(fileContent, {
+			header: true,
+			skipEmptyLines: true,
+			complete: (result) => resolve(result.data),
+			error: (error: Error) => reject(error),
+		});
+	});
+}
 
 // Check if output directory exists
 if (!fs.existsSync(outputDir)) {
@@ -16,25 +40,18 @@ if (!fs.existsSync(outputDir)) {
 // Load original applicants count
 let totalOriginalApplicants = 0;
 if (fs.existsSync(applicantsCsvPath)) {
-	const fileContent = fs.readFileSync(applicantsCsvPath, "utf8");
-	Papa.parse<Record<string, string>>(fileContent, {
-		header: true,
-		skipEmptyLines: true,
-		complete: (result) => {
-			totalOriginalApplicants = result.data.length;
-			console.log(`[INFO] Original applicants in processedApplicants.csv: ${totalOriginalApplicants}\n`);
-		},
-		error: (error: any) => {
-			console.warn(`[WARN] Could not read original applicants count: ${error}`);
-		},
-	});
+	try {
+		const rows = await parseCsv(applicantsCsvPath);
+		totalOriginalApplicants = rows.length;
+		console.log(`[INFO] Original applicants in ${applicantsCsvPath}: ${totalOriginalApplicants}\n`);
+	} catch (error) {
+		console.warn(`[WARN] Could not read original applicants count: ${error}`);
+	}
 }
 
 // Read all CSV files from output directory, excluding preprocessing artifacts
 const files = fs.readdirSync(outputDir).filter((file) => {
-	return file.endsWith(".csv") && 
-		   !file.includes("flaggedApplicants") && 
-		   !file.includes("designers");
+	return file.endsWith(".csv") && !preprocessArtifacts.includes(file);
 });
 
 if (files.length === 0) {
@@ -48,53 +65,52 @@ console.log(`[INFO] Found ${files.length} project files\n`);
 const allApplicants: Map<number, { name: string; project: string }> = new Map();
 const duplicates: { id: number; name: string; projects: string[] }[] = [];
 const projectCounts: Map<string, number> = new Map();
+let rowsWithoutValidId = 0;
 
 // Parse each CSV file
 for (const file of files) {
 	const filePath = path.join(outputDir, file);
 	const projectName = file.replace("applicants-", "").replace(".csv", "");
 
-	const fileContent = fs.readFileSync(filePath, "utf8");
+	let rows: Record<string, string>[];
+	try {
+		rows = await parseCsv(filePath);
+	} catch (error) {
+		console.error(`[ERROR] Failed to parse ${file}:`, error);
+		continue;
+	}
 
-	Papa.parse<Record<string, string>>(fileContent, {
-		header: true,
-		skipEmptyLines: true,
-		complete: (result) => {
-			const applicantCount = result.data.length;
-			projectCounts.set(projectName, applicantCount);
+	projectCounts.set(projectName, rows.length);
 
-			for (const row of result.data) {
-				// Extract ID and name (adjust column names as needed)
-				const id = row.id ? parseInt(row.id) : null;
-				const name = row.name || "Unknown";
+	for (const row of rows) {
+		const id = row.id !== undefined && row.id.trim() !== "" ? Number(row.id) : null;
+		const name = row.name || "Unknown";
 
-				if (id === null || id === undefined) {
-					console.warn(`[WARN] Applicant without ID in ${projectName}: ${name}`);
-					continue;
-				}
+		// NaN must be rejected here: it would collapse every malformed row onto a
+		// single Map key, hiding real duplicates and inflating the "allocated" count.
+		if (id === null || !Number.isInteger(id)) {
+			rowsWithoutValidId++;
+			console.warn(`[WARN] Applicant without a valid ID in ${projectName}: ${name} (id: "${row.id}")`);
+			continue;
+		}
 
-				// Check for duplicates
-				if (allApplicants.has(id)) {
-					const existing = allApplicants.get(id)!;
-					const duplicate = duplicates.find((d) => d.id === id);
-					if (duplicate) {
-						duplicate.projects.push(projectName);
-					} else {
-						duplicates.push({
-							id,
-							name: existing.name,
-							projects: [existing.project, projectName],
-						});
-					}
-				} else {
-					allApplicants.set(id, { name, project: projectName });
-				}
+		// Check for duplicates
+		if (allApplicants.has(id)) {
+			const existing = allApplicants.get(id)!;
+			const duplicate = duplicates.find((d) => d.id === id);
+			if (duplicate) {
+				duplicate.projects.push(projectName);
+			} else {
+				duplicates.push({
+					id,
+					name: existing.name,
+					projects: [existing.project, projectName],
+				});
 			}
-		},
-		error: (error: any) => {
-			console.error(`[ERROR] Failed to parse ${file}:`, error);
-		},
-	});
+		} else {
+			allApplicants.set(id, { name, project: projectName });
+		}
+	}
 }
 
 // Summary
@@ -128,13 +144,18 @@ if (duplicates.length > 0) {
 	console.log("\n[SUCCESS] No duplicates found - each person is in exactly one project");
 }
 
-// Summary
-const totalAllocated = allApplicants.size;
-console.log(`\n========== SUMMARY ==========`);
-console.log(`Total applicants allocated: ${totalAllocated}`);
-console.log(`Duplicate applicants: ${duplicates.length}`);
-console.log(`Status: ${duplicates.length === 0 ? "✅ VALID" : "❌ INVALID"}`);
+if (rowsWithoutValidId > 0) {
+	console.log(`\n[ERROR] ${rowsWithoutValidId} allocated rows had no valid ID and could not be checked`);
+}
 
-if (duplicates.length > 0) {
+// Summary
+const isValid = duplicates.length === 0 && rowsWithoutValidId === 0;
+console.log(`\n========== SUMMARY ==========`);
+console.log(`Total applicants allocated: ${allApplicants.size}`);
+console.log(`Duplicate applicants: ${duplicates.length}`);
+console.log(`Rows with invalid IDs: ${rowsWithoutValidId}`);
+console.log(`Status: ${isValid ? "✅ VALID" : "❌ INVALID"}`);
+
+if (!isValid) {
 	process.exit(1);
 }

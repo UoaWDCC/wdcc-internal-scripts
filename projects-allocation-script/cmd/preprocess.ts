@@ -3,6 +3,7 @@ import path from "path";
 import { parseApplicantsCsv } from "../csv/parseApplicants.js";
 import { writeCsv } from "../csv/writeCsv.js";
 import { preprocessConfig } from "../config/scriptConfig.js"
+import { Applicant } from "../common/types.js";
 
 console.log("[INFO] Running preprocess script...");
 
@@ -33,9 +34,11 @@ console.log(`[INFO] There are ${designers.length} designers`);
 console.log("========");
 
 console.log("[INFO] Filtering applicants based on if they have a passionBlurb < 100 char");
-const flaggedApplicants = applicants.filter(
-	(applicant) => (applicant.passionBlurb && applicant.passionBlurb.length < 100)
-);
+const isFlagged = (applicant: Applicant) =>
+	Boolean(applicant.passionBlurb && applicant.passionBlurb.length < 100);
+const flaggedApplicants = applicants.filter(isFlagged);
+console.log(`[INFO] There are ${flaggedApplicants.length} flagged applicants (held back for exec review)`);
+applicants = applicants.filter((applicant) => !isFlagged(applicant));
 
 console.log("[INFO] Filtering applicants based on if they're a designer");
 applicants = applicants.filter(applicant => applicant.rolePreference !== "Designer")

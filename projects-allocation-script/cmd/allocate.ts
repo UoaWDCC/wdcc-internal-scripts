@@ -1,5 +1,4 @@
 // --- This file mainly for I/O ---
-import { powerOfFriendship } from "../allocation/algorithms/powerOfFriendship.js";
 import { randomlyAllocate } from "../allocation/helper/random.js";
 import { logAllocationRankingList } from "../allocation/helper/utils.js";
 import { parseCsvProjects } from "../csv/parseCsvProjects.js";
@@ -28,7 +27,7 @@ logAllocationRankingList(finalAllocation, randomAllocations);
 // Output
 console.log(`[INFO] Writing to CSVs...`);
 finalAllocation.forEach((allocation: Allocation) => {
-	const safeProjectName = allocation.project.name.replace(/[\\/:.]/, "_");
+	const safeProjectName = allocation.project.name.replace(/[\\/:.]/g, "_");
 	console.log(`[INFO] ${safeProjectName} (${allocation.project.id}) has ${allocation.applicants.length} applicants.`);
 	const outFileName = outputFileFormat.replace("<team>", safeProjectName);
 	writeCsv(allocation.applicants, outFileName);

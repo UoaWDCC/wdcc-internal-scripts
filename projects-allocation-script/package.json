@@ -24,8 +24,7 @@
         "validate": "node dist/cmd/validate.js",
         "p": "pnpm run preprocess",
         "a": "pnpm run allocate",
-        "v": "pnpm run validate",
-        "test": "node dist/allocation/test"
+        "v": "pnpm run validate"
     },
     "volta": {
         "node": "22.14.0",
