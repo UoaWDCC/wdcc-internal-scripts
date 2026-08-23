@@ -1,5 +1,5 @@
-import { Allocation, Applicant, Project } from "../../common/models.js";
-import { config } from "../../config.js";
+import { Allocation, Applicant, Project } from "../../common/types.js";
+import { allocationConfig } from "../../config/scriptConfig.js";
 import { calculateUtilityOfAllocation } from "../helper/objective.js";
 import { randomlyAllocate } from "../helper/random.js";
 import { countAllApplicants } from "../helper/utils.js";
@@ -39,7 +39,7 @@ export function randomHeuristicAscent(applicants: Applicant[], projects: Project
  */
 export function heuristicAscent(
     generator: () => Allocation[],
-    numAscents: number = config.allocation.numAscents
+    numAscents: number = allocationConfig.numAscents
 ): Allocation[] {
     let highestUtility = 0;
     let bestAllocation: Allocation[] = [];
@@ -134,6 +134,18 @@ function getMaxIgnores(numProjects: number, numApplicants: number) {
  */
 function swapApplicants(swap: Swap): number {
     const { alloc1, i, alloc2, j } = swap;
+    const applicant1 = alloc1.applicants[i];
+    const applicant2 = alloc2.applicants[j];
+    
+    // Check if swapping would violate preferences
+    const applicant1Prefs = applicant1.projectChoices || [];
+    const applicant2Prefs = applicant2.projectChoices || [];
+    
+    // Only allow swap if both applicants prefer their destination project
+    if (!applicant1Prefs.includes(alloc2.project.name) || !applicant2Prefs.includes(alloc1.project.name)) {
+        return 0; // Reject swap - violates preferences
+    }
+    
     const alloc1OldUtility = alloc1.utility;
     const alloc2OldUtility = alloc2.utility;
 
@@ -148,7 +160,6 @@ function swapApplicants(swap: Swap): number {
 
     // Check if worth it
     if (netChangeInUtility > 0) {
-        console.log(`Found swap with net utility change ${netChangeInUtility}. Swapped!`);
         alloc1.utility = alloc1NewUtility;
         alloc2.utility = alloc2NewUtility;
         return netChangeInUtility;

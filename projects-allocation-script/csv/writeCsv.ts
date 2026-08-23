@@ -11,5 +11,5 @@ export const writeCsv = (data: unknown[], filePath: string): void => {
 
     const csv = Papa.unparse(data);
     fs.writeFileSync(filePath, csv, "utf8");
-    console.log(`✅ CSV successfully written to ${filePath}`);
+    console.log(`[SUCCESS] CSV successfully written to ${filePath}`);
 };
